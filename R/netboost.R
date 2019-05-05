@@ -181,6 +181,7 @@ netboost <-
                 nb_min_varExpl = nb_min_varExpl,
                 max_singleton = max_singleton,
                 cores = cores,
+                method = method,
                 qc_plot = qc_plot
             )
 
@@ -503,6 +504,8 @@ tree_dendro <- function(tree,
 #'   is issued.
 #' @param nb_min_varExpl    Minimum proportion of variance explained for
 #'   returned module eigengenes. The number of PCs is capped at n_pc.
+#' @param method    A character string specifying the method to be used for
+#'   correlation coefficients.
 #' @return List
 cut_dendro <-
     function(tree_dendro,
@@ -512,7 +515,8 @@ cut_dendro <-
              name_of_tree = "",
              qc_plot = TRUE,
              n_pc = 1,
-             nb_min_varExpl = 0.5) {
+             nb_min_varExpl = 0.5,
+             method = c("pearson", "kendall", "spearman")) {
         dynamicMods <-
             dynamicTreeCut::cutreeDynamic(
                 dendro = tree_dendro[["dendro"]],
@@ -530,7 +534,7 @@ cut_dendro <-
             )
         MEs <- MEList[["nb_eigengenes"]]
         # Calculate dissimilarity of module eigengenes
-        MEDiss <- 1 - cor(MEs)
+        MEDiss <- 1 - WGCNA::cor(MEs,method = method)
         # Cluster module eigengenes
         if (length(MEDiss) > 1) {
             METree <- hclust(as.dist(MEDiss), method = "average")
@@ -550,6 +554,7 @@ cut_dendro <-
                     exprData = tree_dendro[["data"]],
                     dynamicMods,
                     cutHeight = ME_diss_thres,
+                    method = method,
                     verbose = 3
                 )
             mergedColors <- merged[["colors"]]
@@ -562,7 +567,7 @@ cut_dendro <-
                     nb_min_varExpl = nb_min_varExpl
                 )
             MEs <- MEList[["nb_eigengenes"]]
-            MEDiss <- 1 - cor(MEs)
+            MEDiss <- 1 - WGCNA::cor(MEs,method = method)
             if (length(MEDiss) > 1) {
                 METree <- hclust(as.dist(MEDiss), method = "average")
                 if (qc_plot == TRUE &
@@ -650,6 +655,8 @@ cut_dendro <-
 #'   is issued.
 #' @param nb_min_varExpl    Minimum proportion of variance explained for
 #'   returned module eigengenes. The number of PCs is capped at n_pc.
+#' @param method    A character string specifying the method to be used for
+#'   correlation coefficients.
 #' @return List
 #'
 #' @examples
@@ -676,7 +683,8 @@ cut_trees <-
              ME_diss_thres,
              qc_plot = TRUE,
              n_pc = 1,
-             nb_min_varExpl = 0.5) {
+             nb_min_varExpl = 0.5,
+             method = c("pearson", "kendall", "spearman")) {
         res <- list()
         i <- 1L
         
@@ -699,7 +707,8 @@ cut_trees <-
                                           i, ":"),
                     qc_plot = qc_plot,
                     n_pc = n_pc,
-                    nb_min_varExpl = nb_min_varExpl
+                    nb_min_varExpl = nb_min_varExpl,
+                    method = method
                 )
             res[[i]][["colors"]] <- cut_dendro_res[["colors"]]
             res[[i]][["MEs"]] <- cut_dendro_res[["MEs"]]
@@ -734,6 +743,8 @@ cut_trees <-
 #'   is issued.
 #' @param nb_min_varExpl    Minimum proportion of variance explained for
 #'   returned module eigengenes. The number of PCs is capped at n_pc.
+#' @param method    A character string specifying the method to be used for
+#'   correlation coefficients.
 #' @return List
 #'
 #' @examples
@@ -761,7 +772,8 @@ nb_clust <-
              cores = getOption("mc.cores", 2L),
              qc_plot = TRUE,
              n_pc = 1,
-             nb_min_varExpl = 0.5) {
+             nb_min_varExpl = 0.5,
+             method = c("pearson", "kendall", "spearman")) {
         forest <-
             nb_mcupgma(
                 filter = filter,
@@ -779,7 +791,8 @@ nb_clust <-
                 ME_diss_thres = ME_diss_thres,
                 qc_plot = qc_plot,
                 n_pc = n_pc,
-                nb_min_varExpl = nb_min_varExpl
+                nb_min_varExpl = nb_min_varExpl,
+                method = method
             )
 #         sum_res <- nb_summary(clust_res = results, qc_plot = qc_plot)
         sum_res <- nb_summary(clust_res = results)
@@ -1108,10 +1121,10 @@ nb_filter <-
                        "with more than 5 million features.")
         }
         
-        if(filter_method == "boosting"){
+        if(filter_method[1] == "boosting"){
             message(paste("Netboost: Filtering (boosting)"))
                 ## Initialize data structures for optimized boosting (once)
-        cpp_filter_base(as.matrix(datan), stepno, mode_ = mode)
+        netboost:::cpp_filter_base(as.matrix(datan), stepno, mode_ = mode)
         
         ## Parallelization 'conventional' via mclapply.
         if (cores > 1) {
@@ -1123,7 +1136,7 @@ nb_filter <-
                                   x * 100 / until, date()))
                 }
                 
-                cpp_filter_step(x)
+                netboost:::cpp_filter_step(x)
             }, mc.cores = cores)
         } else {
             ## Sequential function for debugging.  print(paste('Sequential version'))
@@ -1133,12 +1146,12 @@ nb_filter <-
                                   x * 100 / until, date()))
                 }
                 
-                cpp_filter_step(x)
+                netboost:::cpp_filter_step(x)
             })
         }
         
         ## Important!: stop (free memory, else suitable memory is still blocked)
-        cpp_filter_end()
+        netboost:::cpp_filter_end()
         
         filter <-
             do.call("rbind", lapply(seq_along(boosting_filter), function(x) {
@@ -1152,15 +1165,15 @@ nb_filter <-
             }))
 
         filter <- unique(t(apply(filter, 1, sort)))
-        } else if (filter_method == "skip"){
+        } else if (filter_method[1] == "skip"){
             message(paste("Netboost: Filtering (skip)"))
             filter <- t(combn(x=ncol(datan),m=2))
-        } else if (filter_method %in% c("pearson", "kendall", "spearman")){
-            message(paste0("Netboost: Filtering (",filter_method,")"))
+        } else if (filter_method[1] %in% c("pearson", "kendall", "spearman")){
+            message(paste0("Netboost: Filtering (",filter_method[1],")"))
             combs <- combn(x=ncol(datan),m=2)
             index <- mclapply(1:ncol(combs),FUN=function(i){
             stats::cor.test(x=datan[,combs[1,i]],y=datan[,combs[2,i]],alternative = "two.sided",
-              method = filter_method,#mc.cores=4L,
+              method = filter_method[1],#mc.cores=4L,
               exact = NULL, conf.level = 0.95, continuity = FALSE)$p.value < 0.05
             })
             filter <- t(combs[,unlist(index)])
