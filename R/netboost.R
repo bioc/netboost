@@ -133,7 +133,8 @@ netboost <-
                 filter_method = filter_method,
                 progress = progress,
                 cores = cores,
-                mode = mode
+                mode = mode,
+                verbose = verbose
             )
         
         if (verbose) message("Netboost: Finished filter step.")
@@ -378,7 +379,7 @@ nb_mcupgma <-
                 console = FALSE
             )
         
-        if (as.logical(verbose))
+        if (verbose>1)
             message(ret)
         
         if (!file.exists(file_dist_tree) ||
@@ -1070,6 +1071,7 @@ nb_transfer <-
 #' @param cores    Integer. Amount of CPU cores used (<=1 : sequential)
 #' @param mode    Integer. Mode (0: x86, 1: FMA, 2: AVX). Features are only
 #'   available if compiled accordingly and available on the hardware.
+#' @param verbose    Additional diagnostic messages.
 #' @return matrix n times 2 matrix with the indicies of the n unique entrees of
 #'   the filter
 #'
@@ -1094,7 +1096,8 @@ nb_filter <-
                  "kendall", "spearman", "pearson"),
              cores = getOption("mc.cores",
                                2L),
-             mode = 2L) {
+             mode = 2L,
+             verbose = getOption("verbose")) {
         if (!exists("datan"))
             stop("datan must be provided")
         
@@ -1122,7 +1125,7 @@ nb_filter <-
         }
         
         if(filter_method[1] == "boosting"){
-            message(paste("Netboost: Filtering (boosting)"))
+            if (verbose) message(paste("Netboost: Filtering (boosting)"))
                 ## Initialize data structures for optimized boosting (once)
         netboost:::cpp_filter_base(as.matrix(datan), stepno, mode_ = mode)
         
@@ -1166,15 +1169,16 @@ nb_filter <-
 
         filter <- unique(t(apply(filter, 1, sort)))
         } else if (filter_method[1] == "skip"){
-            message(paste("Netboost: Filtering (skip)"))
+            if (verbose) message(paste("Netboost: Filtering (skip)"))
             filter <- t(combn(x=ncol(datan),m=2))
         } else if (filter_method[1] %in% c("pearson", "kendall", "spearman")){
-            message(paste0("Netboost: Filtering (",filter_method[1],")"))
+            if (verbose) message(paste0("Netboost: Filtering (",
+            filter_method[1],")"))
             combs <- combn(x=ncol(datan),m=2)
             index <- mclapply(1:ncol(combs),FUN=function(i){
-            stats::cor.test(x=datan[,combs[1,i]],y=datan[,combs[2,i]],alternative = "two.sided",
-              method = filter_method[1],#mc.cores=4L,
-              exact = NULL, conf.level = 0.95, continuity = FALSE)$p.value < 0.05
+            stats::cor.test(x=datan[,combs[1,i]],y=datan[,
+              combs[2,i]],alternative = "two.sided",
+              method = filter_method[1])$p.value < 0.05
             })
             filter <- t(combs[,unlist(index)])
         } else {
@@ -1185,6 +1189,8 @@ nb_filter <-
                                 to = nrow(filter),
                                 by = 1)
 
+        if (verbose) message("Netboost: Filter includes ",
+        nrow(filter)," edges.")
         return(filter)
     }
 
