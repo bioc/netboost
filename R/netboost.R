@@ -554,7 +554,7 @@ cut_dendro <-
                     exprData = tree_dendro[["data"]],
                     dynamicMods,
                     cutHeight = ME_diss_thres,
-                    method = method,
+                    corOptions = list(method = method, use = "p"),
                     verbose = 3
                 )
             mergedColors <- merged[["colors"]]
