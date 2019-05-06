@@ -1,2 +1,5 @@
-Changes in version 0.99.XX (2019-04-02)
+Changes in version 1.1.1 (2019-05-06)
++ Introduction of Pearson-, Spearman- and Kendall-based filtering.
+
+Changes in version 1.0.0 (2019-04-02)
 + Final submission changes for Bioconductor.
