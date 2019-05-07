@@ -156,8 +156,8 @@ netboost <-
                 )}
         }
         
-        if (verbose) message("Netboost: Initialising distance calculation.")
-
+        if (verbose) message("Netboost: Initialising distance calculation (",
+        method[1],").")
         dist <-
             nb_dist(
                 datan = datan,
