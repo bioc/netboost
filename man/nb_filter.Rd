@@ -7,7 +7,9 @@
 ~10s).}
 \usage{
 nb_filter(datan, stepno = 20L, until = 0L, progress = 1000L,
-  cores = getOption("mc.cores", 2L), mode = 2L)
+  filter_method = c("boosting", "skip", "kendall", "spearman",
+  "pearson"), cores = getOption("mc.cores", 2L), mode = 2L,
+  verbose = getOption("verbose"))
 }
 \arguments{
 \item{datan}{Data frame were rows correspond to samples and columns to
@@ -20,10 +22,17 @@ features.}
 \item{progress}{Integer. If > 0, print progress after every X steps (mind:
 parallel!)}
 
+\item{filter_method}{The following filtering methods are supported:
+"boosting" (non-zero coefficients in likelihood based boosting),
+"skip" (no filter), "kendall" (stats::cor.test),
+"spearman" (stats::cor.test), "pearson" (stats::cor.test)}
+
 \item{cores}{Integer. Amount of CPU cores used (<=1 : sequential)}
 
 \item{mode}{Integer. Mode (0: x86, 1: FMA, 2: AVX). Features are only
 available if compiled accordingly and available on the hardware.}
+
+\item{verbose}{Additional diagnostic messages.}
 }
 \value{
 matrix n times 2 matrix with the indicies of the n unique entrees of

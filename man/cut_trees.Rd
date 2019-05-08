@@ -5,7 +5,8 @@
 \title{Module detection for the results from a nb_mcupgma call}
 \usage{
 cut_trees(trees, datan, forest, min_cluster_size = 2L, ME_diss_thres,
-  qc_plot = TRUE, n_pc = 1, nb_min_varExpl = 0.5)
+  qc_plot = TRUE, n_pc = 1, nb_min_varExpl = 0.5,
+  method = c("pearson", "kendall", "spearman"))
 }
 \arguments{
 \item{trees}{List of trees, where one tree is a list of ids and rows}
@@ -31,6 +32,9 @@ is issued.}
 
 \item{nb_min_varExpl}{Minimum proportion of variance explained for
 returned module eigengenes. The number of PCs is capped at n_pc.}
+
+\item{method}{A character string specifying the method to be used for
+correlation coefficients.}
 }
 \value{
 List

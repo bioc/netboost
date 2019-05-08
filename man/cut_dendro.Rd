@@ -6,7 +6,7 @@
 \usage{
 cut_dendro(tree_dendro, min_cluster_size = 2L, datan, ME_diss_thres,
   name_of_tree = "", qc_plot = TRUE, n_pc = 1,
-  nb_min_varExpl = 0.5)
+  nb_min_varExpl = 0.5, method = c("pearson", "kendall", "spearman"))
 }
 \arguments{
 \item{tree_dendro}{List of tree specific objects including dendrogram, 
@@ -33,6 +33,9 @@ is issued.}
 
 \item{nb_min_varExpl}{Minimum proportion of variance explained for
 returned module eigengenes. The number of PCs is capped at n_pc.}
+
+\item{method}{A character string specifying the method to be used for
+correlation coefficients.}
 }
 \value{
 List
