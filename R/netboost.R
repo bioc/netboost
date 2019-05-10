@@ -1127,7 +1127,7 @@ nb_filter <-
         if(filter_method[1] == "boosting"){
             if (verbose) message(paste("Netboost: Filtering (boosting)"))
                 ## Initialize data structures for optimized boosting (once)
-        netboost:::cpp_filter_base(as.matrix(datan), stepno, mode_ = mode)
+        cpp_filter_base(as.matrix(datan), stepno, mode_ = mode)
         
         ## Parallelization 'conventional' via mclapply.
         if (cores > 1) {
@@ -1139,7 +1139,7 @@ nb_filter <-
                                   x * 100 / until, date()))
                 }
                 
-                netboost:::cpp_filter_step(x)
+                cpp_filter_step(x)
             }, mc.cores = cores)
         } else {
             ## Sequential function for debugging.  print(paste('Sequential version'))
@@ -1149,12 +1149,12 @@ nb_filter <-
                                   x * 100 / until, date()))
                 }
                 
-                netboost:::cpp_filter_step(x)
+                cpp_filter_step(x)
             })
         }
         
         ## Important!: stop (free memory, else suitable memory is still blocked)
-        netboost:::cpp_filter_end()
+        cpp_filter_end()
         
         filter <-
             do.call("rbind", lapply(seq_along(boosting_filter), function(x) {
@@ -1170,11 +1170,11 @@ nb_filter <-
         filter <- unique(t(apply(filter, 1, sort)))
         } else if (filter_method[1] == "skip"){
             if (verbose) message(paste("Netboost: Filtering (skip)"))
-            filter <- t(combn(x=ncol(datan),m=2))
+            filter <- t(utils::combn(x=ncol(datan),m=2))
         } else if (filter_method[1] %in% c("pearson", "kendall", "spearman")){
             if (verbose) message(paste0("Netboost: Filtering (",
             filter_method[1],")"))
-            combs <- combn(x=ncol(datan),m=2)
+            combs <- utils::combn(x=ncol(datan),m=2)
             index <- mclapply(1:ncol(combs),FUN=function(i){
             stats::cor.test(x=datan[,combs[1,i]],y=datan[,
               combs[2,i]],alternative = "two.sided",
@@ -1182,7 +1182,7 @@ nb_filter <-
             })
             filter <- t(combs[,unlist(index)])
         } else {
-            error("filter_method in nb_filter not supported.")
+            stop("filter_method in nb_filter not supported.")
         }
         colnames(filter) <- c("cluster_id1", "cluster_id2")
         rownames(filter) <- seq(from = 1,
