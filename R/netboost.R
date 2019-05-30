@@ -1553,7 +1553,7 @@ nb_moduleEigengenes <-
                         nv = min(n, p, n_pc))
                 if(robust){
                     nb_PCA <- stats::prcomp(
-                        x = sapply(t(datModule), rank),
+                        x = t(sapply(datModule, rank)),
                         retx = TRUE,
                         center = TRUE,
                         scale. = TRUE,
