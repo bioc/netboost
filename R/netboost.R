@@ -1271,7 +1271,7 @@ nb_filter <-
                                 by = 1)
 
         if (verbose) message("Netboost: Filter includes ",
-        nrow(filter)," edges.")
+        nrow(filter)," of ",(ncol(datan)*(ncol(datan)-1)/2)," potential edges.")
         return(filter)
     }
 
