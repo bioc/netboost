@@ -543,7 +543,7 @@ cut_dendro <-
             )
         MEs <- MEList[["nb_eigengenes"]]
         # Calculate dissimilarity of module eigengenes
-        MEDiss <- 1 - WGCNA::cor(MEs,method = method)
+        MEDiss <- 1 - abs(WGCNA::cor(MEs,method = method))
         # Cluster module eigengenes
         if (length(MEDiss) > 1) {
             METree <- hclust(as.dist(MEDiss), method = "average")
@@ -558,15 +558,40 @@ cut_dendro <-
                 graphics::abline(h = ME_diss_thres, col = "red")
             }
             
-            merged <-
-                WGCNA::mergeCloseModules(
-                    exprData = tree_dendro[["data"]],
-                    dynamicMods,
-                    cutHeight = ME_diss_thres,
-                    corOptions = list(method = method, use = "p"),
-                    verbose = 3
-                )
-            mergedColors <- merged[["colors"]]
+            colors_old <- dynamicMods
+            colors_new <- c()
+            while(length(unique(colors_old))>length(unique(colors_new))){
+            	if(length(colors_new)>0){
+            	colors_old <- colors_new            	
+            	}
+        		MEcor <- abs(WGCNA::cor(netboost::nb_moduleEigengenes(
+                	expr = tree_dendro[["data"]],
+                	colors = colors_old,
+                	n_pc = 1,
+                	robust = robust_PCs)[["nb_eigengenes"]],method = method))
+                MEcor <- MEcor[rownames(MEcor)!="ME-1_pc1",colnames(MEcor)!="ME-1_pc1"]
+                colors_match <- gsub(pattern="_pc1",replacement="",x=gsub(pattern="ME",replacement="",x=colnames(MEcor)))
+                MEcor <- MEcor - diag(ncol(MEcor))
+                colors_match <- cbind(colors_match[which(MEcor>ME_diss_thres,arr.ind=TRUE)[,"row"]],colors_match[which(MEcor>ME_diss_thres,arr.ind=TRUE)[,"col"]])
+                colors_match <- colors_match[colors_match[,2] < colors_match[,1],,drop=FALSE]
+                colors_new <- colors_old
+                if(nrow(colors_match)>0){
+                    for(i in 1:nrow(colors_match)){
+                        colors_new[colors_new==colors_match[i,1]] <- colors_match[i,2]
+                    }
+                }
+            }
+            mergedColors <- colors_new
+            
+#             merged <-
+#                 WGCNA::mergeCloseModules(
+#                     exprData = tree_dendro[["data"]],
+#                     dynamicMods,
+#                     cutHeight = ME_diss_thres,
+#                     corOptions = list(method = method, use = "p"),
+#                     verbose = 3
+#                 )
+#             mergedColors <- merged[["colors"]]
             # Calculate eigengenes
             MEList <-
                 netboost::nb_moduleEigengenes(
@@ -577,7 +602,7 @@ cut_dendro <-
                     nb_min_varExpl = nb_min_varExpl
                 )
             MEs <- MEList[["nb_eigengenes"]]
-            MEDiss <- 1 - WGCNA::cor(MEs,method = method)
+            MEDiss <- 1 - abs(WGCNA::cor(MEs,method = method))
             if (length(MEDiss) > 1) {
                 METree <- hclust(as.dist(MEDiss), method = "average")
                 if (qc_plot == TRUE &
