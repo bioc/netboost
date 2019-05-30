@@ -596,7 +596,7 @@ cut_dendro <-
             MEList <-
                 netboost::nb_moduleEigengenes(
                     expr = tree_dendro[["data"]],
-                    colors = merged[["colors"]],
+                    colors = mergedColors,
                     n_pc = n_pc,
                     robust = robust_PCs,
                     nb_min_varExpl = nb_min_varExpl
