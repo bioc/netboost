@@ -1541,33 +1541,30 @@ nb_moduleEigengenes <-
             n <- dim(datModule)[1]
             p <- dim(datModule)[2]
             pc <- try({
-                if (verbose > 5)
-                    message(paste(spaces, " ...scaling"))
-                if (scale)
+                if (scale){
+                	if (verbose > 5)
+                    	message(paste(spaces, " ...scaling"))
                     datModule <- t(scale(t(datModule)))
+                }
+                if(robust){
+                	if (verbose > 5)
+                    	message(paste(spaces, " ...ranking"))
+                    datModule <- t(apply(X=t(datModule),MARGIN=2,FUN=rank))
+                    datModule <- t(scale(t(datModule)))
+                }
                 if (verbose > 5)
                     message(paste(spaces, " ...calculating SVD"))
                 svd1 <-
                     svd(datModule,
                         nu = min(n, p, n_pc),
                         nv = min(n, p, n_pc))
-                if(robust){
-                    nb_PCA <- stats::prcomp(
-                        x = t(sapply(datModule, rank)),
-                        retx = TRUE,
-                        center = TRUE,
-                        scale. = TRUE,
-                        tol = NULL,
-                        rank. = NULL)
-                } else {
-                    nb_PCA <- stats::prcomp(
+                nb_PCA <- stats::prcomp(
                         x = t(datModule),
                         retx = TRUE,
                         center = FALSE,
                         scale. = FALSE,
                         tol = NULL,
-                        rank. = NULL)        
-                }
+                        rank. = NULL)
                 nb_PCA[["x"]] <- t(t(nb_PCA[["x"]]) / svd1[["d"]])
                 nb_PCA[["rotation"]] <- t(t(nb_PCA[["rotation"]]) / svd1[["d"]])
                 if (verbose > 5)
