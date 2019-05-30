@@ -1555,8 +1555,8 @@ nb_moduleEigengenes <-
                     nb_PCA <- stats::prcomp(
                         x = sapply(t(datModule), rank),
                         retx = TRUE,
-                        center = FALSE,
-                        scale. = FALSE,
+                        center = TRUE,
+                        scale. = TRUE,
                         tol = NULL,
                         rank. = NULL)
                 } else {
