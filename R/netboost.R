@@ -558,7 +558,7 @@ cut_dendro <-
                 graphics::abline(h = ME_diss_thres, col = "red")
             }
             
- #            colors_old <- dynamicMods
+#             colors_old <- dynamicMods
 #             colors_new <- c()
 #             while(length(unique(colors_old))>length(unique(colors_new))){
 #             	if(length(colors_new)>0){
@@ -583,17 +583,45 @@ cut_dendro <-
 #             }
 #             mergedColors <- colors_new
 #  
-#  
+
+            colors_old <- dynamicMods
+            colors_new <- c()
+            while(length(unique(colors_old))>length(unique(colors_new))){
+            	if(length(colors_new)>0){
+            		colors_old <- colors_new            	
+            	}
+        		MEs <- netboost::nb_moduleEigengenes(
+                	expr = tree_dendro[["data"]],
+                	colors = colors_old,
+                	n_pc = 1,
+                	robust = robust_PCs)[["nb_eigengenes"]]
+				colors_new <- colors_old            	
+        		MEDiss <- 1 - abs(WGCNA::cor(MEs,method = method))
+       			if (length(MEDiss) > 1) {
+            		METree <- hclust(as.dist(MEDiss), method = "average")
+            		clust <- WGCNA::cutreeStatic(METree, cutHeight = ME_diss_thres, minSize = 2)
+            		for(i in clust[clust!=0]){
+            			colors_match <- METree$labels[clust==i]
+            			colors_match <- colors_match[colors_match!="ME-1_pc1"]
+            			if(length(colors_match)>1){
+							colors_match <- gsub(pattern="_pc1",replacement="",x=gsub(pattern="ME",replacement="",x=colors_match))
+							colors_new[colors_new%in%colors_match] <- as.character(min(as.integer(colors_match)))	
+            			}
+        			}
+				}
+			}
+            mergedColors <- colors_new
+
             
-            merged <-
-                WGCNA::mergeCloseModules(
-                    exprData = tree_dendro[["data"]],
-                    dynamicMods,
-                    cutHeight = ME_diss_thres,
-                    corOptions = list(method = method, use = "p"),
-                    verbose = 3
-                )
-            mergedColors <- merged[["colors"]]
+#             merged <-
+#                 WGCNA::mergeCloseModules(
+#                     exprData = tree_dendro[["data"]],
+#                     dynamicMods,
+#                     cutHeight = ME_diss_thres,
+#                     corOptions = list(method = method, use = "p"),
+#                     verbose = 3
+#                 )
+#             mergedColors <- merged[["colors"]]
             # Calculate eigengenes
             MEList <-
                 netboost::nb_moduleEigengenes(
