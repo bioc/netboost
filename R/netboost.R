@@ -558,6 +558,10 @@ cut_dendro <-
                 graphics::abline(h = ME_diss_thres, col = "red")
             }
             
+            
+            save_verbose <- getOption("verbose")
+            options("verbose" = FALSE)
+
 #             colors_old <- dynamicMods
 #             colors_new <- c()
 #             while(length(unique(colors_old))>length(unique(colors_new))){
@@ -569,7 +573,7 @@ cut_dendro <-
 #                 	colors = colors_old,
 #                 	n_pc = 1,
 #                 	robust = robust_PCs)[["nb_eigengenes"]],method = method))
-#                 MEcor <- MEcor[rownames(MEcor)!="ME-1_pc1",colnames(MEcor)!="ME-1_pc1"]
+#                 MEcor <- MEcor[rownames(MEcor)!="ME0_pc1",colnames(MEcor)!="ME0_pc1"]
 #                 colors_match <- gsub(pattern="_pc1",replacement="",x=gsub(pattern="ME",replacement="",x=colnames(MEcor)))
 #                 MEcor <- MEcor - diag(ncol(MEcor))
 #                 colors_match <- cbind(colors_match[which(MEcor>ME_diss_thres,arr.ind=TRUE)[,"row"]],colors_match[which(MEcor>ME_diss_thres,arr.ind=TRUE)[,"col"]])
@@ -602,7 +606,7 @@ cut_dendro <-
             		clust <- WGCNA::cutreeStatic(METree, cutHeight = ME_diss_thres, minSize = 2)
             		for(i in clust[clust!=0]){
             			colors_match <- METree$labels[clust==i]
-            			colors_match <- colors_match[colors_match!="ME-1_pc1"]
+            			colors_match <- colors_match[colors_match!="ME0_pc1"]
             			if(length(colors_match)>1){
 							colors_match <- gsub(pattern="_pc1",replacement="",x=gsub(pattern="ME",replacement="",x=colors_match))
 							colors_new[colors_new%in%colors_match] <- as.character(min(as.integer(colors_match)))	
@@ -623,6 +627,8 @@ cut_dendro <-
 #                 )
 #             mergedColors <- merged[["colors"]]
             # Calculate eigengenes
+
+           options("verbose" = save_verbose)
             MEList <-
                 netboost::nb_moduleEigengenes(
                     expr = tree_dendro[["data"]],
