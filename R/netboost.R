@@ -50,6 +50,8 @@ Sys.unsetenv("ALLOW_WGCNA_THREADS")
 #'   entries to be calculated. The number of returned variance explained
 #'   entries is currently ‘min(n_pc,10)’. If given ‘n_pc’ is 
 #'   greater than 10, a warning is issued.
+#' @param robust_PCs	Should PCA be calculated on ranked data (Spearman PCA)?
+#'   Rotations will not correspond to original data if this is applied.
 #' @param nb_min_varExpl    Minimum proportion of variance explained for
 #'   returned module eigengenes. The number of PCs is capped at n_pc.
 #' @return dendros    A list of dendrograms. For each fully separate part of the
@@ -86,6 +88,7 @@ netboost <-
              min_cluster_size = 2L,
              ME_diss_thres = 0.25,
              n_pc = 1,
+             robust_PCs = FALSE,
              nb_min_varExpl = 0.5,
              cores = as.integer(getOption("mc.cores", 2)),
              scale = TRUE,
@@ -179,6 +182,7 @@ netboost <-
                 min_cluster_size = min_cluster_size,
                 ME_diss_thres = ME_diss_thres,
                 n_pc = n_pc,
+                robust_PCs = robust_PCs,
                 nb_min_varExpl = nb_min_varExpl,
                 max_singleton = max_singleton,
                 cores = cores,
@@ -503,6 +507,8 @@ tree_dendro <- function(tree,
 #'   entries to be calculated. The number of returned variance explained entries
 #'   is currently ‘min(n_pc,10)’. If given ‘n_pc’ is greater than 10, a warning 
 #'   is issued.
+#' @param robust_PCs	Should PCA be calculated on ranked data (Spearman PCA)?
+#'   Rotations will not correspond to original data if this is applied.
 #' @param nb_min_varExpl    Minimum proportion of variance explained for
 #'   returned module eigengenes. The number of PCs is capped at n_pc.
 #' @param method    A character string specifying the method to be used for
@@ -516,6 +522,7 @@ cut_dendro <-
              name_of_tree = "",
              qc_plot = TRUE,
              n_pc = 1,
+             robust_PCs = FALSE,
              nb_min_varExpl = 0.5,
              method = c("pearson", "kendall", "spearman")) {
         dynamicMods <-
@@ -531,6 +538,7 @@ cut_dendro <-
                 expr = tree_dendro[["data"]],
                 colors = dynamicMods,
                 n_pc = n_pc,
+                robust = robust_PCs,
                 nb_min_varExpl = nb_min_varExpl
             )
         MEs <- MEList[["nb_eigengenes"]]
@@ -565,6 +573,7 @@ cut_dendro <-
                     expr = tree_dendro[["data"]],
                     colors = merged[["colors"]],
                     n_pc = n_pc,
+                    robust = robust_PCs,
                     nb_min_varExpl = nb_min_varExpl
                 )
             MEs <- MEList[["nb_eigengenes"]]
@@ -654,6 +663,8 @@ cut_dendro <-
 #'   entries to be calculated. The number of returned variance explained entries
 #'   is currently ‘min(n_pc,10)’. If given ‘n_pc’ is greater than 10, a warning 
 #'   is issued.
+#' @param robust_PCs	Should PCA be calculated on ranked data (Spearman PCA)?
+#'   Rotations will not correspond to original data if this is applied.
 #' @param nb_min_varExpl    Minimum proportion of variance explained for
 #'   returned module eigengenes. The number of PCs is capped at n_pc.
 #' @param method    A character string specifying the method to be used for
@@ -684,6 +695,7 @@ cut_trees <-
              ME_diss_thres,
              qc_plot = TRUE,
              n_pc = 1,
+             robust_PCs = FALSE,
              nb_min_varExpl = 0.5,
              method = c("pearson", "kendall", "spearman")) {
         res <- list()
@@ -708,6 +720,7 @@ cut_trees <-
                                           i, ":"),
                     qc_plot = qc_plot,
                     n_pc = n_pc,
+                    robust_PCs = robust_PCs,
                     nb_min_varExpl = nb_min_varExpl,
                     method = method
                 )
@@ -742,6 +755,8 @@ cut_trees <-
 #'   entries to be calculated. The number of returned variance explained entries
 #'   is currently ‘min(n_pc,10)’. If given ‘n_pc’ is greater than 10, a warning 
 #'   is issued.
+#' @param robust_PCs	Should PCA be calculated on ranked data (Spearman PCA)?
+#'   Rotations will not correspond to original data if this is applied.
 #' @param nb_min_varExpl    Minimum proportion of variance explained for
 #'   returned module eigengenes. The number of PCs is capped at n_pc.
 #' @param method    A character string specifying the method to be used for
@@ -773,6 +788,7 @@ nb_clust <-
              cores = getOption("mc.cores", 2L),
              qc_plot = TRUE,
              n_pc = 1,
+             robust_PCs = FALSE,
              nb_min_varExpl = 0.5,
              method = c("pearson", "kendall", "spearman")) {
         forest <-
@@ -792,6 +808,7 @@ nb_clust <-
                 ME_diss_thres = ME_diss_thres,
                 qc_plot = qc_plot,
                 n_pc = n_pc,
+                robust_PCs = robust_PCs,
                 nb_min_varExpl = nb_min_varExpl,
                 method = method
             )
@@ -991,6 +1008,8 @@ nb_summary <- function(#qc_plot = TRUE,
 #' @param scale    Logical. Should data be scaled and centered?
 #' @param only_module_membership    Logical. Should only module memberships be
 #'   transfered and PCs be newly computed?
+#' @param robust_PCs	Should PCA be calculated on ranked data (Spearman PCA)?
+#'   Rotations will not correspond to original data if this is applied.
 #' @return List
 #'
 #' @examples
@@ -1008,6 +1027,7 @@ nb_transfer <-
     function(nb_summary = NULL,
              new_data = NULL,
              scale = FALSE,
+             robust_PCs = FALSE,
              only_module_membership = FALSE) {
         if (!exists("new_data"))
             stop("datan must be provided")
@@ -1038,7 +1058,7 @@ nb_transfer <-
         if (!only_module_membership) {
             MEs <- as.matrix(new_data) %*% nb_summary[["rotation"]]
         } else {
-            MEs <- netboost::nb_moduleEigengenes(expr = new_data,
+            MEs <- netboost::nb_moduleEigengenes(expr = new_data,robust = robust_PCs,
                                                  colors = nb_summary[["colors"]])[["nb_eigengenes"]]
             colnames(MEs)[lapply(strsplit(x = colnames(MEs), split = "-"), FUN = length) > 1] <-
                 paste0("ME0_", substring(text = colnames(MEs)[lapply(strsplit(x = colnames(MEs),
@@ -1312,6 +1332,8 @@ nb_plot_dendro <-
 #'   module. If this calculation fails, or if ‘subHubs==FALSE’, the value of
 #'   ‘trapErrors’ will determine whether the offending module will be removed or
 #'   whether the function will issue an error and stop.
+#' @param robust	Should PCA be calculated on ranked data (Spearman PCA)?
+#'   Rotations will not correspond to original data if this is applied.
 #' @param trapErrors    Controls handling of errors from that may arise when
 #'   there are too many ‘NA’ entries in expression data. If ‘TRUE’, errors from
 #'   calling these functions will be trapped without abnormal exit.  If ‘FALSE’,
@@ -1401,6 +1423,7 @@ nb_moduleEigengenes <-
              else
                  "grey",
              subHubs = TRUE,
+             robust = FALSE,
              trapErrors = FALSE,
              return_valid_only = trapErrors,
              soft_power = 6,
@@ -1528,15 +1551,23 @@ nb_moduleEigengenes <-
                     svd(datModule,
                         nu = min(n, p, n_pc),
                         nv = min(n, p, n_pc))
-                nb_PCA <-
-                    stats::prcomp(
+                if(robust){
+                    nb_PCA <- stats::prcomp(
+                        x = sapply(t(datModule), rank),
+                        retx = TRUE,
+                        center = FALSE,
+                        scale. = FALSE,
+                        tol = NULL,
+                        rank. = NULL)
+                } else {
+                    nb_PCA <- stats::prcomp(
                         x = t(datModule),
                         retx = TRUE,
                         center = FALSE,
                         scale. = FALSE,
                         tol = NULL,
-                        rank. = NULL
-                    )
+                        rank. = NULL)        
+                }
                 nb_PCA[["x"]] <- t(t(nb_PCA[["x"]]) / svd1[["d"]])
                 nb_PCA[["rotation"]] <- t(t(nb_PCA[["rotation"]]) / svd1[["d"]])
                 if (verbose > 5)
