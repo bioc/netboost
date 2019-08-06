@@ -8,9 +8,9 @@ netboost(datan = NULL, stepno = 20L, filter_method = c("boosting",
   "skip", "kendall", "spearman", "pearson"), until = 0L,
   progress = 1000L, mode = 2L, soft_power = NULL,
   max_singleton = ncol(datan), qc_plot = TRUE, min_cluster_size = 2L,
-  ME_diss_thres = 0.25, n_pc = 1, nb_min_varExpl = 0.5,
-  cores = as.integer(getOption("mc.cores", 2)), scale = TRUE,
-  method = c("pearson", "kendall", "spearman"),
+  ME_diss_thres = 0.25, n_pc = 1, robust_PCs = FALSE,
+  nb_min_varExpl = 0.5, cores = as.integer(getOption("mc.cores", 2)),
+  scale = TRUE, method = c("pearson", "kendall", "spearman"),
   verbose = getOption("verbose"))
 }
 \arguments{
@@ -52,6 +52,9 @@ merging close modules.}
 entries to be calculated. The number of returned variance explained
 entries is currently ‘min(n_pc,10)’. If given ‘n_pc’ is 
 greater than 10, a warning is issued.}
+
+\item{robust_PCs}{Should PCA be calculated on ranked data (Spearman PCA)?
+Rotations will not correspond to original data if this is applied.}
 
 \item{nb_min_varExpl}{Minimum proportion of variance explained for
 returned module eigengenes. The number of PCs is capped at n_pc.}

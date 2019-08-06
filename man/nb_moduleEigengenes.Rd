@@ -6,9 +6,9 @@
 \usage{
 nb_moduleEigengenes(expr, colors, n_pc = 1, align = "along average",
   exclude_grey = FALSE, grey = if (is.numeric(colors)) 0 else "grey",
-  subHubs = TRUE, trapErrors = FALSE, return_valid_only = trapErrors,
-  soft_power = 6, scale = TRUE, verbose = 0, indent = 0,
-  nb_min_varExpl = 0.5)
+  subHubs = TRUE, robust = FALSE, trapErrors = FALSE,
+  return_valid_only = trapErrors, soft_power = 6, scale = TRUE,
+  verbose = 0, indent = 0, nb_min_varExpl = 0.5)
 }
 \arguments{
 \item{expr}{Expression data for a single set in the form of a data frame
@@ -42,6 +42,9 @@ weighted average of the most connected hub genes in the corresponding
 module. If this calculation fails, or if ‘subHubs==FALSE’, the value of
 ‘trapErrors’ will determine whether the offending module will be removed or
 whether the function will issue an error and stop.}
+
+\item{robust}{Should PCA be calculated on ranked data (Spearman PCA)?
+Rotations will not correspond to original data if this is applied.}
 
 \item{trapErrors}{Controls handling of errors from that may arise when
 there are too many ‘NA’ entries in expression data. If ‘TRUE’, errors from

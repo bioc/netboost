@@ -5,7 +5,7 @@
 \title{Module detection for an individual tree}
 \usage{
 cut_dendro(tree_dendro, min_cluster_size = 2L, datan, ME_diss_thres,
-  name_of_tree = "", qc_plot = TRUE, n_pc = 1,
+  name_of_tree = "", qc_plot = TRUE, n_pc = 1, robust_PCs = FALSE,
   nb_min_varExpl = 0.5, method = c("pearson", "kendall", "spearman"))
 }
 \arguments{
@@ -30,6 +30,9 @@ merging close modules.}
 entries to be calculated. The number of returned variance explained entries
 is currently ‘min(n_pc,10)’. If given ‘n_pc’ is greater than 10, a warning 
 is issued.}
+
+\item{robust_PCs}{Should PCA be calculated on ranked data (Spearman PCA)?
+Rotations will not correspond to original data if this is applied.}
 
 \item{nb_min_varExpl}{Minimum proportion of variance explained for
 returned module eigengenes. The number of PCs is capped at n_pc.}
