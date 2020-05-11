@@ -1599,8 +1599,8 @@ nb_moduleEigengenes <-
             if (verbose > 2)
                 message(paste(spaces, " ...", sum(restrict1), "features"))
             datModule <- as.matrix(t(expr[, restrict1]))
-            n <- dim(datModule)[1]
-            p <- dim(datModule)[2]
+            n <- dim(datModule)[2]
+            p <- dim(datModule)[1]
             pc <- try({
                 if (scale){
                 	if (verbose > 5)
@@ -1610,8 +1610,8 @@ nb_moduleEigengenes <-
                 if(robust){
                 	if (verbose > 5)
                     	message(paste(spaces, " ...ranking"))
-                    datModule <- t(apply(X=t(datModule),MARGIN=2,FUN=rank))
-                    datModule <- t(scale(t(datModule)))
+                    datModule <- apply(X=datModule,MARGIN=1,FUN=rank)
+                    datModule <- t(scale(datModule))
                 }
                 if (verbose > 5)
                     message(paste(spaces, " ...calculating SVD"))

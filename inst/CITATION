@@ -1,5 +1,5 @@
 citEntry(entry="article",
-         title = "Netboost: Boosting-supported network analysis improves high-dimensional omics prediction in acute myeloid leukemia and Huntington's disease",
+         title = "{N}etboost: {B}oosting-supported {N}etwork {A}nalysis {I}mproves {H}igh-{D}imensional {O}mics {P}rediction in {A}cute {M}yeloid {L}eukemia and {H}untington's {D}isease}",
          author = personList( as.person("Pascal Schlosser"),
                               as.person("Jochen Knaus"),
                               as.person("Maximilian Schmutz"),
@@ -10,10 +10,11 @@ citEntry(entry="article",
                               as.person("Harald Binder"),
                               as.person("Michael Lübbert"),
                               as.person("Martin Schumacher")),
-         year = 2019,
-         journal = "arXiv e-prints",
-         number = "arXiv:1909.12551",
+         year = 2020,
+         month = 05,
+         journal = "IEEE/ACM Trans Comput Biol Bioinform",
+         doi = "10.1109/TCBB.2020.2983010",
          textVersion = 
          paste("Pascal Schlosser, Jochen Knaus, Maximilian Schmutz, Konstanze Döhner, Christoph Plass, Lars Bullinger, Rainer Claus, Harald Binder, Michael Lübbert and Martin Schumacher.", 
                "Netboost: Boosting-supported network analysis improves high-dimensional omics prediction in acute myeloid leukemia and Huntington's disease.",
-               "arXiv e-prints (2019): 1909.12551."))
+               "IEEE/ACM Trans Comput Biol Bioinform (2020): 10.1109/TCBB.2020.2983010."))
