@@ -1256,7 +1256,7 @@ nb_filter <-
             if (verbose) message(paste0("Netboost: Filtering (",
             filter_method[1],")"))
             combs <- utils::combn(x=ncol(datan),m=2)
-            index <- parallel::mclapply(1:ncol(combs),FUN=function(i){
+            index <- parallel::mclapply(seq_len(ncol(combs)),FUN=function(i){
 #			n <- t(!is.na(datan[,combs[1,i]])) %*% (!is.na(datan[,combs[2,i]]))
             n <- nrow(datan)
 			r <- stats::cor(datan[,combs[1,i]], datan[,combs[2,i]], use = "pairwise.complete.obs", method = filter_method[1])
@@ -1273,7 +1273,7 @@ nb_filter <-
             if (verbose) message(paste0("Netboost: Filtering (",
             filter_method[1],")"))
             combs <- utils::combn(x=ncol(datan),m=2)
-            index <- parallel::mclapply(1:ncol(combs),FUN=function(i){
+            index <- parallel::mclapply(seq_len(ncol(combs)),FUN=function(i){
             stats::cor.test(x=datan[,combs[1,i]],y=datan[,
               combs[2,i]],alternative = "two.sided",
               method = filter_method[1])$p.value < 0.05
