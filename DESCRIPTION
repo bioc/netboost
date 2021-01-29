@@ -1,7 +1,7 @@
 Package: netboost
 Type: Package
 Title: Network Analysis Supported by Boosting
-Version: 1.7.3
+Version: 1.7.4
 Date: 2021-01-29
 Authors@R: c(person("Pascal", "Schlosser", role = c("aut", "cre"),
                     email = "pascal.schlosser@uniklinik-freiburg.de"),
@@ -11,7 +11,7 @@ Authors@R: c(person("Pascal", "Schlosser", role = c("aut", "cre"),
 Description: Boosting supported network analysis for high-dimensional omics applications. 
     This package comes bundled with the MC-UPGMA clustering package by Yaniv Loewenstein.
 Depends:
-  R (>= 3.6.0)
+  R (>= 4.0.0)
 biocViews:
   Software,
   StatisticalMethod,
