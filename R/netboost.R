@@ -1173,8 +1173,8 @@ nb_filter <-
              stepno = 20L,
              until = 0L,
              progress = 1000L,
-             filter_method = c("boosting","skip",
-                 "kendall", "spearman", "pearson"),
+             filter_method = c("spearman","skip",
+                 "kendall", "boosting", "pearson"),
              cores = getOption("mc.cores",
                                2L),
              mode = 2L,
@@ -1252,15 +1252,32 @@ nb_filter <-
         } else if (filter_method[1] == "skip"){
             if (verbose) message(paste("Netboost: Filtering (skip)"))
             filter <- t(utils::combn(x=ncol(datan),m=2))
-        } else if (filter_method[1] %in% c("pearson", "kendall", "spearman")){
+        } else if (filter_method[1] %in% c("pearson", "spearman")){
             if (verbose) message(paste0("Netboost: Filtering (",
             filter_method[1],")"))
             combs <- utils::combn(x=ncol(datan),m=2)
-            index <- mclapply(1:ncol(combs),FUN=function(i){
+            index <- parallel::mclapply(1:ncol(combs),FUN=function(i){
+#			n <- t(!is.na(datan[,combs[1,i]])) %*% (!is.na(datan[,combs[2,i]]))
+            n <- nrow(datan)
+			r <- stats::cor(datan[,combs[1,i]], datan[,combs[2,i]], use = "pairwise.complete.obs", method = filter_method[1])
+			t <- (r*sqrt(n-2))/sqrt(1-r^2)
+			return(2*(1 - pt(abs(t),(n-2))) < 0.05)
+#			se <- sqrt((1-r*r)/(n-2))
+#
+#            stats::cor.test(x=datan[,combs[1,i]],y=datan[,
+#              combs[2,i]],alternative = "two.sided",
+#              method = filter_method[1])$p.value < 0.05
+            }, mc.cores = cores)
+            filter <- t(combs[,unlist(index)])
+        } else if (filter_method[1] %in% c("kendall")){
+            if (verbose) message(paste0("Netboost: Filtering (",
+            filter_method[1],")"))
+            combs <- utils::combn(x=ncol(datan),m=2)
+            index <- parallel::mclapply(1:ncol(combs),FUN=function(i){
             stats::cor.test(x=datan[,combs[1,i]],y=datan[,
               combs[2,i]],alternative = "two.sided",
               method = filter_method[1])$p.value < 0.05
-            })
+            }, mc.cores = cores)
             filter <- t(combs[,unlist(index)])
         } else {
             stop("filter_method in nb_filter not supported.")
