@@ -1261,7 +1261,7 @@ nb_filter <-
             n <- nrow(datan)
 			r <- stats::cor(datan[,combs[1,i]], datan[,combs[2,i]], use = "pairwise.complete.obs", method = filter_method[1])
 			t <- (r*sqrt(n-2))/sqrt(1-r^2)
-			return(2*(1 - pt(abs(t),(n-2))) < 0.05)
+			return(2*(1 - stats::pt(abs(t),(n-2))) < 0.05)
 #			se <- sqrt((1-r*r)/(n-2))
 #
 #            stats::cor.test(x=datan[,combs[1,i]],y=datan[,
