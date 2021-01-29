@@ -38,6 +38,5 @@ src/symbols.rds
 man/.Rapp.history
 netboost.Rproj
 .DS_Store
-.BBSoptions
 vignettes/netboost.R
 vignettes/netboost.html

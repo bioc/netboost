@@ -54,7 +54,7 @@ computed principal components
  `ME_diss_thres` defines the merging threshold for identified clusters. 
 
  For details on the options please see `?netboost` and the corresponding paper
-Schlosser et al. 2019 (under review).
+Schlosser et al. 2020.
 
 ```{r netboost_run}
 results <- netboost(datan = tcga_aml_meth_rna_chr18, stepno = 20L, 
@@ -95,7 +95,7 @@ results$var_explained[,1:5]
 name. To list features of module ME10 we can extract them by:
 
 ```{r module_members}
-results$names[results$colors==10]
+results$names[results$colors==8]
 ```
 
 The final dendrogram including all trees can be plotted including labels (`results$names`) for 
