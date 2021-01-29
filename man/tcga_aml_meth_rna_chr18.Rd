@@ -6,7 +6,7 @@
 \title{TCGA RNA and methylation measurement on a subset of
 chromosome 18 for 80 AML patients.}
 \format{
-A data frame with 80 rows (patients) and 1000 variables (features).
+A data frame with 80 rows (patients) and 500 variables (features).
 }
 \source{
 \url{https://portal.gdc.cancer.gov/}
