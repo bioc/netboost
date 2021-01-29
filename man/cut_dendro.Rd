@@ -4,9 +4,18 @@
 \alias{cut_dendro}
 \title{Module detection for an individual tree}
 \usage{
-cut_dendro(tree_dendro, min_cluster_size = 2L, datan, ME_diss_thres,
-  name_of_tree = "", qc_plot = TRUE, n_pc = 1, robust_PCs = FALSE,
-  nb_min_varExpl = 0.5, method = c("pearson", "kendall", "spearman"))
+cut_dendro(
+  tree_dendro,
+  min_cluster_size = 2L,
+  datan,
+  ME_diss_thres,
+  name_of_tree = "",
+  qc_plot = TRUE,
+  n_pc = 1,
+  robust_PCs = FALSE,
+  nb_min_varExpl = 0.5,
+  method = c("pearson", "kendall", "spearman")
+)
 }
 \arguments{
 \item{tree_dendro}{List of tree specific objects including dendrogram, 

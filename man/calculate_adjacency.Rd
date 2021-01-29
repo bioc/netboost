@@ -4,8 +4,12 @@
 \alias{calculate_adjacency}
 \title{Calculate network adjacencies for filter}
 \usage{
-calculate_adjacency(datan, filter, soft_power = 2,
-  method = c("pearson", "kendall", "spearman"))
+calculate_adjacency(
+  datan,
+  filter,
+  soft_power = 2,
+  method = c("pearson", "kendall", "spearman")
+)
 }
 \arguments{
 \item{datan}{Data frame were rows correspond to samples and columns to

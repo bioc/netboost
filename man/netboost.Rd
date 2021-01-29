@@ -4,14 +4,26 @@
 \alias{netboost}
 \title{Netboost clustering.}
 \usage{
-netboost(datan = NULL, stepno = 20L, filter_method = c("boosting",
-  "skip", "kendall", "spearman", "pearson"), until = 0L,
-  progress = 1000L, mode = 2L, soft_power = NULL,
-  max_singleton = ncol(datan), qc_plot = TRUE, min_cluster_size = 2L,
-  ME_diss_thres = 0.25, n_pc = 1, robust_PCs = FALSE,
-  nb_min_varExpl = 0.5, cores = as.integer(getOption("mc.cores", 2)),
-  scale = TRUE, method = c("pearson", "kendall", "spearman"),
-  verbose = getOption("verbose"))
+netboost(
+  datan = NULL,
+  stepno = 20L,
+  filter_method = c("boosting", "skip", "kendall", "spearman", "pearson"),
+  until = 0L,
+  progress = 1000L,
+  mode = 2L,
+  soft_power = NULL,
+  max_singleton = ncol(datan),
+  qc_plot = TRUE,
+  min_cluster_size = 2L,
+  ME_diss_thres = 0.25,
+  n_pc = 1,
+  robust_PCs = FALSE,
+  nb_min_varExpl = 0.5,
+  cores = as.integer(getOption("mc.cores", 2)),
+  scale = TRUE,
+  method = c("pearson", "kendall", "spearman"),
+  verbose = getOption("verbose")
+)
 }
 \arguments{
 \item{datan}{Data frame were rows correspond to samples and columns to

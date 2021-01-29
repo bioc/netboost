@@ -12,7 +12,7 @@ Required for building are C/C++ compilers, GNU make, GZIP, Perl.
 ```
 if (!requireNamespace("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
-BiocManager::install("netboost", version = "3.9")
+BiocManager::install("netboost", version = "3.12")
 ```
 
 # Example

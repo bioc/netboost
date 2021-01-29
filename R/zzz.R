@@ -16,7 +16,7 @@
 #' @importFrom colorspace rainbow_hcl
 #' @importFrom grDevices dev.off gray pdf
 #' @importFrom graphics abline layout par plot
-#' @importFrom stats as.dendrogram as.dist cor cov prcomp hclust order.dendrogram
+#' @importFrom stats as.dendrogram as.dist cor cov prcomp hclust order.dendrogram pt
 #' @importFrom dynamicTreeCut cutreeDynamic indentSpaces printFlush
 #' @importFrom impute impute.knn
 #' @importFrom WGCNA allowWGCNAThreads mergeCloseModules plotDendroAndColors

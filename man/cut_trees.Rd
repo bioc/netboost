@@ -4,9 +4,18 @@
 \alias{cut_trees}
 \title{Module detection for the results from a nb_mcupgma call}
 \usage{
-cut_trees(trees, datan, forest, min_cluster_size = 2L, ME_diss_thres,
-  qc_plot = TRUE, n_pc = 1, robust_PCs = FALSE,
-  nb_min_varExpl = 0.5, method = c("pearson", "kendall", "spearman"))
+cut_trees(
+  trees,
+  datan,
+  forest,
+  min_cluster_size = 2L,
+  ME_diss_thres,
+  qc_plot = TRUE,
+  n_pc = 1,
+  robust_PCs = FALSE,
+  nb_min_varExpl = 0.5,
+  method = c("pearson", "kendall", "spearman")
+)
 }
 \arguments{
 \item{trees}{List of trees, where one tree is a list of ids and rows}

@@ -6,10 +6,16 @@
 (overhead of this method does not fall into account as single steps are
 ~10s).}
 \usage{
-nb_filter(datan, stepno = 20L, until = 0L, progress = 1000L,
-  filter_method = c("boosting", "skip", "kendall", "spearman",
-  "pearson"), cores = getOption("mc.cores", 2L), mode = 2L,
-  verbose = getOption("verbose"))
+nb_filter(
+  datan,
+  stepno = 20L,
+  until = 0L,
+  progress = 1000L,
+  filter_method = c("spearman", "skip", "kendall", "boosting", "pearson"),
+  cores = getOption("mc.cores", 2L),
+  mode = 2L,
+  verbose = getOption("verbose")
+)
 }
 \arguments{
 \item{datan}{Data frame were rows correspond to samples and columns to

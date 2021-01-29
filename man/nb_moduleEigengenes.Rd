@@ -4,11 +4,23 @@
 \alias{nb_moduleEigengenes}
 \title{Netboost module aggregate extraction.}
 \usage{
-nb_moduleEigengenes(expr, colors, n_pc = 1, align = "along average",
-  exclude_grey = FALSE, grey = if (is.numeric(colors)) 0 else "grey",
-  subHubs = TRUE, robust = FALSE, trapErrors = FALSE,
-  return_valid_only = trapErrors, soft_power = 6, scale = TRUE,
-  verbose = 0, indent = 0, nb_min_varExpl = 0.5)
+nb_moduleEigengenes(
+  expr,
+  colors,
+  n_pc = 1,
+  align = "along average",
+  exclude_grey = FALSE,
+  grey = if (is.numeric(colors)) 0 else "grey",
+  subHubs = TRUE,
+  robust = FALSE,
+  trapErrors = FALSE,
+  return_valid_only = trapErrors,
+  soft_power = 6,
+  scale = TRUE,
+  verbose = 0,
+  indent = 0,
+  nb_min_varExpl = 0.5
+)
 }
 \arguments{
 \item{expr}{Expression data for a single set in the form of a data frame
