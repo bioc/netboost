@@ -1,8 +1,6 @@
-Changes in version 1.7.3 (2020-01-29)
-+ Speed up Pearson- and Spearman-based filtering.
-
-Changes in version 1.1.3 (2019-08-01)
-+ Introduction of the fully rank based extension (netboost(...,robust_PCs=TRUE,filter_method="spearman",method="spearman")).
+Changes in version 1.99.0 (2021-03-08)
++ Fully rank based extension (netboost(...,robust_PCs=TRUE,filter_method="spearman",method="spearman")).
++ Full support of the non-parametric version.
 
 Changes in version 1.1.1 (2019-05-06)
 + Introduction of Pearson-, Spearman- and Kendall-based filtering.
