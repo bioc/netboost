@@ -92,7 +92,7 @@ results$var_explained[,1:5]
 ```
 
 `results$colors` use a numeric coding for the modules which matches their module 
-name. To list features of module ME10 we can extract them by:
+name. To list features of module ME8 we can extract them by:
 
 ```{r module_members}
 results$names[results$colors==8]
@@ -119,6 +119,13 @@ identical aggregate measures.
     ME_transfer <- nb_transfer(nb_summary = results, 
     new_data = tcga_aml_meth_rna_chr18, scale = TRUE)
     all(round(results$MEs, 12) == round(ME_transfer, 12))
+```
+
+Netboost now also has a fully non-parametric implementation. Code is not run here to showcase the multicore option (Bioconductor vignette builder does not allow for multicore execution). Adjust `cores` to your machine:
+```{r robust_netboost_run}
+#results <- netboost(datan = tcga_aml_meth_rna_chr18,cores=10L,
+#soft_power = 3L, min_cluster_size = 10L, n_pc = 2, qc_plot = FALSE,
+#filter_method = "spearman", robust_PCs = TRUE, method = "spearman")
 ```
 
 # Session Info
