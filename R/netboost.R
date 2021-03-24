@@ -210,22 +210,37 @@ netboost <-
 #'   based on the scale free topology criterion if unspecified.
 #' @param method    A character string specifying the method to be used for
 #'   correlation coefficients.
+#' @param cores    Integer. Amount of CPU cores used (<=1 : sequential).
 #' @return Vector with adjacencies for the filter
 calculate_adjacency <-
     function(datan,
              filter,
              soft_power = 2,
-             method = c("pearson", "kendall", "spearman")) {
-        return(vapply(X=seq(
-            from = 1,
-            to = nrow(filter),
-            by = 1
-        ),
-        FUN=function(i) {
-            abs(WGCNA::cor(datan[, filter[i, 1]],
-                           datan[, filter[i, 2]], method = method)) ^ soft_power
-        },
-        FUN.VALUE=1))
+             method = c("pearson", "kendall", "spearman"),
+            cores = getOption("mc.cores",2L)) {
+        if(method == "spearman"){
+            datan <- apply(X=datan,MARGIN=2,FUN=rank)
+            return(unlist(parallel::mclapply(X=seq(
+                from = 1,
+                to = nrow(filter),
+                by = 1
+            ),
+            FUN=function(i) {
+                abs(WGCNA::cor(datan[, filter[i, 1]],
+                               datan[, filter[i, 2]], method = "pearson")) ^ soft_power
+            },mc.cores=cores)))
+        } else {
+            return(unlist(parallel::mclapply(X=seq(
+                from = 1,
+                to = nrow(filter),
+                by = 1
+            ),
+            FUN=function(i) {
+                abs(WGCNA::cor(datan[, filter[i, 1]],
+                               datan[, filter[i, 2]], method = method)) ^ soft_power
+            },mc.cores=cores)))
+        }
+             
     }
 
 #' Calculate distance (external wrapper for internal C++ function)
@@ -287,7 +302,8 @@ nb_dist <-
                 datan = datan,
                 filter = filter,
                 soft_power = soft_power,
-                method = method)
+                method = method,
+                cores=cores)
         ))
     }
 
@@ -1252,22 +1268,42 @@ nb_filter <-
         } else if (filter_method[1] == "skip"){
             if (verbose) message(paste("Netboost: Filtering (skip)"))
             filter <- t(utils::combn(x=ncol(datan),m=2))
-        } else if (filter_method[1] %in% c("pearson", "spearman")){
+        } else if (filter_method[1] == "spearman"){
             if (verbose) message(paste0("Netboost: Filtering (",
             filter_method[1],")"))
             combs <- utils::combn(x=ncol(datan),m=2)
-            index <- parallel::mclapply(seq_len(ncol(combs)),FUN=function(i){
-#			n <- t(!is.na(datan[,combs[1,i]])) %*% (!is.na(datan[,combs[2,i]]))
             n <- nrow(datan)
-			r <- stats::cor(datan[,combs[1,i]], datan[,combs[2,i]], use = "pairwise.complete.obs", method = filter_method[1])
-			t <- (r*sqrt(n-2))/sqrt(1-r^2)
-			return(2*(1 - stats::pt(abs(t),(n-2))) < 0.05)
-#			se <- sqrt((1-r*r)/(n-2))
-#
-#            stats::cor.test(x=datan[,combs[1,i]],y=datan[,
-#              combs[2,i]],alternative = "two.sided",
-#              method = filter_method[1])$p.value < 0.05
-            }, mc.cores = cores)
+            cor_thres <- stats::qt((1-0.025),df=(n-2))/sqrt(n-2)
+            datan <- apply(X=datan,MARGIN=2,FUN=rank)
+            index <- (parallel::mclapply(X=seq(
+                from = 1,
+                to = ncol(combs),
+                by = 1
+            ),
+            FUN=function(i) {
+			r <- abs(stats::cor(datan[,combs[1,i]], datan[,combs[2,i]], use = "pairwise.complete.obs", method = "pearson"))
+#                r <- abs(WGCNA::cor(datan[, combs[1,i]],
+#                               datan[, combs[2,i]], method = "pearson"))
+                return((r/sqrt(1-r^2)) > cor_thres)
+            },mc.cores=cores))
+            filter <- t(combs[,unlist(index)])
+        } else if (filter_method[1] == "pearson"){
+            if (verbose) message(paste0("Netboost: Filtering (",
+            filter_method[1],")"))
+            combs <- utils::combn(x=ncol(datan),m=2)
+            n <- nrow(datan)
+            cor_thres <- stats::qt((1-0.025),df=(n-2))/sqrt(n-2)
+            index <- (parallel::mclapply(X=seq(
+                from = 1,
+                to = ncol(combs),
+                by = 1
+            ),
+            FUN=function(i) {
+			r <- abs(stats::cor(datan[,combs[1,i]], datan[,combs[2,i]], use = "pairwise.complete.obs", method = filter_method[1]))
+#                r <- abs(WGCNA::cor(datan[, combs[1,i]],
+#                               datan[, combs[2,i]], method = filter_method[1]))
+                return((r/sqrt(1-r^2)) > cor_thres)
+            },mc.cores=cores))
             filter <- t(combs[,unlist(index)])
         } else if (filter_method[1] %in% c("kendall")){
             if (verbose) message(paste0("Netboost: Filtering (",
