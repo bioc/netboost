@@ -8,7 +8,8 @@ calculate_adjacency(
   datan,
   filter,
   soft_power = 2,
-  method = c("pearson", "kendall", "spearman")
+  method = c("pearson", "kendall", "spearman"),
+  cores = getOption("mc.cores", 2L)
 )
 }
 \arguments{
@@ -22,6 +23,8 @@ based on the scale free topology criterion if unspecified.}
 
 \item{method}{A character string specifying the method to be used for
 correlation coefficients.}
+
+\item{cores}{Integer. Amount of CPU cores used (<=1 : sequential).}
 }
 \value{
 Vector with adjacencies for the filter
