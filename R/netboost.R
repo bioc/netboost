@@ -167,7 +167,7 @@ netboost <-
                 filter = filter,
                 soft_power = soft_power,
                 cores = cores,
-                method = method
+                method = method[1]
             )
 
         if (verbose) message("Netboost: Finished distance calculation.")
@@ -186,7 +186,7 @@ netboost <-
                 nb_min_varExpl = nb_min_varExpl,
                 max_singleton = max_singleton,
                 cores = cores,
-                method = method,
+                method = method[1],
                 qc_plot = qc_plot
             )
 
@@ -218,7 +218,7 @@ calculate_adjacency <-
              soft_power = 2,
              method = c("pearson", "kendall", "spearman"),
             cores = getOption("mc.cores",2L)) {
-        if(method == "spearman"){
+        if(method[1] == "spearman"){
             datan <- apply(X=datan,MARGIN=2,FUN=rank)
             return(unlist(parallel::mclapply(X=seq(
                 from = 1,
@@ -237,7 +237,7 @@ calculate_adjacency <-
             ),
             FUN=function(i) {
                 abs(WGCNA::cor(datan[, filter[i, 1]],
-                               datan[, filter[i, 2]], method = method)) ^ soft_power
+                               datan[, filter[i, 2]], method = method[1])) ^ soft_power
             },mc.cores=cores)))
         }
              
@@ -302,7 +302,7 @@ nb_dist <-
                 datan = datan,
                 filter = filter,
                 soft_power = soft_power,
-                method = method,
+                method = method[1],
                 cores=cores)
         ))
     }
@@ -559,7 +559,7 @@ cut_dendro <-
             )
         MEs <- MEList[["nb_eigengenes"]]
         # Calculate dissimilarity of module eigengenes
-        MEDiss <- 1 - abs(WGCNA::cor(MEs,method = method))
+        MEDiss <- 1 - abs(WGCNA::cor(MEs,method = method[1]))
         # Cluster module eigengenes
         if (length(MEDiss) > 1) {
             METree <- hclust(as.dist(MEDiss), method = "average")
@@ -616,7 +616,7 @@ cut_dendro <-
                 	n_pc = 1,
                 	robust = robust_PCs)[["nb_eigengenes"]]
 				colors_new <- colors_old            	
-        		MEDiss <- 1 - abs(WGCNA::cor(MEs,method = method))
+        		MEDiss <- 1 - abs(WGCNA::cor(MEs,method = method[1]))
        			if (length(MEDiss) > 1) {
             		METree <- hclust(as.dist(MEDiss), method = "average")
             		clust <- WGCNA::cutreeStatic(METree, cutHeight = ME_diss_thres, minSize = 2)
@@ -654,7 +654,7 @@ cut_dendro <-
                     nb_min_varExpl = nb_min_varExpl
                 )
             MEs <- MEList[["nb_eigengenes"]]
-            MEDiss <- 1 - abs(WGCNA::cor(MEs,method = method))
+            MEDiss <- 1 - abs(WGCNA::cor(MEs,method = method[1]))
             if (length(MEDiss) > 1) {
                 METree <- hclust(as.dist(MEDiss), method = "average")
                 if (qc_plot == TRUE &
@@ -799,7 +799,7 @@ cut_trees <-
                     n_pc = n_pc,
                     robust_PCs = robust_PCs,
                     nb_min_varExpl = nb_min_varExpl,
-                    method = method
+                    method = method[1]
                 )
             res[[i]][["colors"]] <- cut_dendro_res[["colors"]]
             res[[i]][["MEs"]] <- cut_dendro_res[["MEs"]]
@@ -887,7 +887,7 @@ nb_clust <-
                 n_pc = n_pc,
                 robust_PCs = robust_PCs,
                 nb_min_varExpl = nb_min_varExpl,
-                method = method
+                method = method[1]
             )
 #         sum_res <- nb_summary(clust_res = results, qc_plot = qc_plot)
         sum_res <- nb_summary(clust_res = results)
