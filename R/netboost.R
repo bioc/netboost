@@ -345,7 +345,7 @@ nb_mcupgma <-
         if (max_singleton > 5e+06) {
             stop("A bug in sparse UPGMA currently prevents analyses",
                  " with more than 5 million features.")
-        } else if (max_singleton < 1e+04) {
+        } else if (max_singleton < 3e+04) {
         tmp_dist <- rep(1,max_singleton*(max_singleton-1)/2)
         for(i in 1:nrow(filter)){
                 tmp_dist[max_singleton*(filter[i,1]-1) - filter[i,1]*(filter[i,1]-1)/2 + filter[i,2]-filter[i,1]] <- dist[i]
