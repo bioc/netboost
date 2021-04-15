@@ -345,8 +345,26 @@ nb_mcupgma <-
         if (max_singleton > 5e+06) {
             stop("A bug in sparse UPGMA currently prevents analyses",
                  " with more than 5 million features.")
+        } else if (max_singleton < 1e+04) {
+        tmp_dist <- rep(1,max_singleton*(max_singleton-1)/2)
+        for(i in 1:nrow(filter)){
+                tmp_dist[max_singleton*(filter[i,1]-1) - filter[i,1]*(filter[i,1]-1)/2 + filter[i,2]-filter[i,1]] <- dist[i]
         }
-        
+        class(tmp_dist) <- "dist"
+        attr(tmp_dist, 'Size') <- max_singleton
+
+        tmp <- fastcluster::hclust(d=tmp_dist,method="average")
+        index1 <- tmp$merge[,1]>0
+        index2 <- tmp$merge[,2]>0
+        tmp2 <- tmp$merge
+        tmp2[index1,1] <- tmp2[index1,1] + max_singleton
+        tmp2[index2,2] <- tmp2[index2,2] + max_singleton
+        tmp2[!index1,1] <- -tmp2[!index1,1]
+        tmp2[!index2,2] <- -tmp2[!index2,2]
+        tmp2 <- cbind(tmp2,tmp$height,(max_singleton+1):(max_singleton+nrow(tmp2)))
+        colnames(tmp2) <- c("cluster_id1","cluster_id2", "distance", "cluster_id3")
+        return(as.matrix(tmp2))
+        } else {       
         if (!dir.create(file.path(netboostTmpPath(), "clustering")))
             stop("Unable to create: ",
                  file.path(netboostTmpPath(), "clustering"))
@@ -414,6 +432,7 @@ nb_mcupgma <-
                               "cluster_id2", "distance", "cluster_id3")
             )
         ))
+        }
     }
 
 #' Extracts independent trees from nb_mcupgma results (external wrapper for

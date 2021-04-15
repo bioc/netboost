@@ -1,3 +1,6 @@
+Changes in version 1.99.4 (2021-04-15)
++ Removal of MCUPGMA-dependencies for smaller networks.
+
 Changes in version 1.99.0 (2021-03-08)
 + Fully rank based extension (netboost(...,robust_PCs=TRUE,filter_method="spearman",method="spearman")).
 + Full support of the non-parametric version.
