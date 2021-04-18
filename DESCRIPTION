@@ -1,8 +1,8 @@
 Package: netboost
 Type: Package
 Title: Network Analysis Supported by Boosting
-Version: 1.99.5
-Date: 2021-04-15
+Version: 1.99.6
+Date: 2021-04-18
 Authors@R: c(person("Pascal", "Schlosser", role = c("aut", "cre"),
                     email = "pascal.schlosser@uniklinik-freiburg.de"),
              person("Jochen", "Knaus", role = c("aut", "ctb"),
@@ -31,7 +31,6 @@ Imports:
   graphics,
   stats,
   utils,
-  fastcluster,
   dynamicTreeCut,
   WGCNA,
   impute,

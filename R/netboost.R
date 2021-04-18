@@ -353,7 +353,7 @@ nb_mcupgma <-
         class(tmp_dist) <- "dist"
         attr(tmp_dist, 'Size') <- max_singleton
 
-        tmp <- fastcluster::hclust(d=tmp_dist,method="average")
+        tmp <- stats::hclust(d=tmp_dist,method="average")
         index1 <- tmp$merge[,1]>0
         index2 <- tmp$merge[,2]>0
         tmp2 <- tmp$merge
