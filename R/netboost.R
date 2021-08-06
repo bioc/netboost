@@ -1146,7 +1146,12 @@ nb_transfer <-
         
         new_data <- new_data[, nb_summary[["names"]]]
         
-        if (scale) {
+        
+        if (robust_PCs) {
+        	new_data <- as.data.frame(apply(X=new_data,MARGIN=2,FUN=rank))
+            new_data <-
+                as.data.frame(scale(new_data, center = TRUE, scale = TRUE))
+        } else if (scale) {
             new_data <-
                 as.data.frame(scale(new_data, center = TRUE, scale = TRUE))
         }
