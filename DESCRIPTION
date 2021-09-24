@@ -1,8 +1,8 @@
 Package: netboost
 Type: Package
 Title: Network Analysis Supported by Boosting
-Version: 2.1.1
-Date: 2021-08-06
+Version: 2.1.2
+Date: 2021-09-24
 Authors@R: c(person("Pascal", "Schlosser", role = c("aut", "cre"),
                     email = "pascal.schlosser@uniklinik-freiburg.de"),
              person("Jochen", "Knaus", role = c("aut", "ctb"),
@@ -42,6 +42,7 @@ LinkingTo:
   RcppParallel
 Suggests:
   knitr,
+  markdown,
   rmarkdown
 VignetteBuilder: knitr
 SystemRequirements:
@@ -57,4 +58,4 @@ License: GPL-3
 URL: https://bioconductor.org/packages/release/bioc/html/netboost.html
 BugReports: https://github.com/PascalSchlosser/netboost/issues
 Encoding: UTF-8
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
