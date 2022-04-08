@@ -1434,7 +1434,7 @@ nb_plot_dendro <-
                                                                by = 1)],
                                       rowLabels = "")
         }
-        invisible(NULL)     # Only to not have empty value section
+        invisible(cbind(nb_summary[["colors"]],plot_colors))     # Only to not have empty value section
     }
 
 
