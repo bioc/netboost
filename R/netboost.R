@@ -1410,7 +1410,7 @@ nb_plot_dendro <-
             colorspace::rainbow_hcl(n = (length(unique(
                 nb_summary[["colors"]]
             ))))[shuffel_index][as.factor(nb_summary[["colors"]])]
-        plot_colors[nb_summary[["colors"]] <= 0] <- grDevices::gray(level = 0.7)
+        plot_colors[as.numeric(nb_summary[["colors"]]) <= 0] <- grDevices::gray(level = 0.7)
         for (tree in seq_along(nb_summary[["dendros"]])) {
             graphics::par(mar = c(0, 4, 8, 4))
             first_col <- last_col + 1
