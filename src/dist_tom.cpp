@@ -24,8 +24,8 @@ using namespace Rcpp;
 using namespace std;
 
 // Types of R (usually int and double, but could be other)
-typedef Sint Rint;
-typedef Sfloat Rfloat;
+typedef int Rint;
+typedef float Rfloat;
 
 /**
  * Main calculation of the distance if all partners are found.
