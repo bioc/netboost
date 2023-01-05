@@ -1,9 +1,5 @@
 /**
- * C++ replacement for R Dist_TOM() function (from schlosser@imbi...)
- *
- * Should be sufficient fast enough, although could be optimized further
- * (either store more data precalculated and then use C-functions instead of
- * STL (there is far too much copying involved atm)
+ * C++ replacement for R Dist_TOM() function
  *
  * Uses RcppParallel for parallel execution.
  *
