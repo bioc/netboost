@@ -1,7 +1,7 @@
 Package: netboost
 Type: Package
 Title: Network Analysis Supported by Boosting
-Version: 2.6.0
+Version: 2.6.1
 Date: 2022-06-07
 Authors@R: c(person("Pascal", "Schlosser", role = c("aut", "cre"),
                     email = "pascal.schlosser@uniklinik-freiburg.de"),
@@ -56,6 +56,6 @@ NeedsCompilation: yes
 LazyData: true
 License: GPL-3
 URL: https://bioconductor.org/packages/release/bioc/html/netboost.html
-BugReports: https://github.com/PascalSchlosser/netboost/issues
+BugReports: pascal.schlosser@uniklinik-freiburg.de
 Encoding: UTF-8
 RoxygenNote: 7.1.2
