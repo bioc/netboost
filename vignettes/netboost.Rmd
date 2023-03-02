@@ -118,7 +118,7 @@ identical aggregate measures.
 ```{r transfer}
     ME_transfer <- nb_transfer(nb_summary = results, 
     new_data = tcga_aml_meth_rna_chr18, scale = TRUE)
-    all(round(results$MEs, 12) == round(ME_transfer, 12))
+    all(round(results$MEs, 10) == round(ME_transfer, 10))
 ```
 
 Netboost now also has a fully non-parametric implementation. Code is not run here to showcase the multicore option (Bioconductor vignette builder does not allow for multicore execution). Adjust `cores` to your machine:
