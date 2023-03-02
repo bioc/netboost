@@ -1,8 +1,8 @@
 Package: netboost
 Type: Package
 Title: Network Analysis Supported by Boosting
-Version: 2.7.3
-Date: 2023-01-27
+Version: 2.7.4
+Date: 2023-03-02
 Authors@R: c(person("Pascal", "Schlosser", role = c("aut", "cre"),
                     email = "pascal.schlosser@uniklinik-freiburg.de"),
              person("Jochen", "Knaus", role = c("aut", "ctb"),
@@ -58,4 +58,4 @@ License: GPL-3
 URL: https://bioconductor.org/packages/release/bioc/html/netboost.html
 BugReports: pascal.schlosser@uniklinik-freiburg.de
 Encoding: UTF-8
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.3

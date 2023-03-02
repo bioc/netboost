@@ -5,6 +5,11 @@
 
 using namespace Rcpp;
 
+#ifdef RCPP_USE_GLOBAL_ROSTREAM
+Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
+Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
+#endif
+
 // filter_base
 void filter_base(const NumericMatrix& data, unsigned int stepno, int mode_);
 RcppExport SEXP _netboost_filter_base(SEXP dataSEXP, SEXP stepnoSEXP, SEXP mode_SEXP) {
