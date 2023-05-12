@@ -70,7 +70,7 @@ tHierarchicalClustering::tDistance tHierarchicalClustering::fHarmonicAverager::o
  * C-tor
  */
 
-tHierarchicalClustering::tHierarchicalClustering(tHierarchicalClustering::tEdges& edges, tClusterId singletonIdUB, tDistance lb_unknown, tDistance ub_unknown, RCPtr<tHierarchicalClustering::fAverager> averager, bool is_allow_inexact_merges ) :
+tHierarchicalClustering::tHierarchicalClustering(tHierarchicalClustering::tEdges& edges, tClusterId singletonIdUB, tDistance lb_unknown, tDistance ub_unknown, RCPtr<tHierarchicalClustering::fAverager> averager, bool is_allow_inexact_merges, bool isLeftGreater ) :
    lb_unknown(lb_unknown), // lambda
    ub_unknown(ub_unknown), // psi
    nextClusterId(singletonIdUB), //k
