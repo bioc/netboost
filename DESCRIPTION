@@ -1,8 +1,8 @@
 Package: netboost
 Type: Package
 Title: Network Analysis Supported by Boosting
-Version: 2.9.2
-Date: 2023-05-16
+Version: 2.9.3
+Date: 2023-05-18
 Authors@R: c(person("Pascal", "Schlosser", role = c("aut", "cre"),
                     email = "pascal.schlosser@uniklinik-freiburg.de"),
              person("Jochen", "Knaus", role = c("aut", "ctb"),
@@ -43,7 +43,6 @@ LinkingTo:
   RcppParallel
 Suggests:
   knitr,
-  markdown,
   rmarkdown
 VignetteBuilder: knitr
 SystemRequirements:
