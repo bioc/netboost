@@ -66,7 +66,7 @@ tHierarchicalClustering::tDistance tHierarchicalClustering::fHarmonicAverager::o
 }
 
 
-// typedef greater<tHierarchicalClustering::tDistance> fIsLeftGreater;
+typedef greater<tHierarchicalClustering::tDistance> fIsLeftGreater;
 tHierarchicalClustering::fIsLeftGreater isLeftGreater;
 // bool isLeftGreater(tHierarchicalClustering::tDistance left, tHierarchicalClustering::tDistance right) {
 //   return left > right;
