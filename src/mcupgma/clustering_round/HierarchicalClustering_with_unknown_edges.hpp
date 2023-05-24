@@ -319,7 +319,7 @@ public:
    /**
     * C-tor
     */
-   tHierarchicalClustering(tEdges& edges, tClusterId singletonIdUB, tDistance lb_unknown, tDistance ub_unknown, RCPtr<fAverager> averager, bool is_allow_inexact_merges = false);
+   tHierarchicalClustering(tEdges& edges, tClusterId singletonIdUB, tDistance lb_unknown, tDistance ub_unknown, RCPtr<fAverager> averager, bool is_allow_inexact_merges = false, tHierarchicalClustering::fIsLeftGreater isLeftGreater);
 
   template <typename fListener>
   void cluster(fListener listener);
