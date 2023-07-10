@@ -66,11 +66,11 @@ tHierarchicalClustering::tDistance tHierarchicalClustering::fHarmonicAverager::o
 }
 
 
-// typedef greater<tHierarchicalClustering::tDistance> fIsLeftGreater;
-// tHierarchicalClustering::fIsLeftGreater isLeftGreater;
-// bool isLeftGreater(tHierarchicalClustering::tDistance left, tHierarchicalClustering::tDistance right) {
-//   return left > right;
-// }
+// * checking whether package ‘netboost’ can be installed ... WARNING
+// Found the following significant warnings:
+//   HierarchicalClustering_with_unknown_edges.cpp:85:68: warning: field 'isLeftGreater' is uninitialized when used here [-Wuninitialized]
+//   HierarchicalClustering_with_unknown_edges.cpp:86:68: warning: field 'isLeftGreater' is uninitialized when used here [-Wuninitialized]
+// See ‘/Users/biocbuild/bbs-3.18-bioc/meat/netboost.Rcheck/00install.out’ for details.
 
 /**
  * C-tor
@@ -80,7 +80,7 @@ tHierarchicalClustering::tHierarchicalClustering(tHierarchicalClustering::tEdges
    lb_unknown(lb_unknown), // lambda
    ub_unknown(ub_unknown), // psi
    nextClusterId(singletonIdUB), //k
-//    fIsLeftGreater(isLeftGreater),
+   isLeftGreater(null),
   edges(edges),
   ubEdgeHeap(edges.begin(), edges.size(), CompareEdgesByUpperBound(isLeftGreater)),
   lbEdgeHeap(edges.begin(), edges.size(), CompareEdgesByLowerBound(isLeftGreater)),
