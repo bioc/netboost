@@ -80,7 +80,7 @@ tHierarchicalClustering::tHierarchicalClustering(tHierarchicalClustering::tEdges
    lb_unknown(lb_unknown), // lambda
    ub_unknown(ub_unknown), // psi
    nextClusterId(singletonIdUB), //k
-   isLeftGreater(null),
+   isLeftGreater(0),
   edges(edges),
   ubEdgeHeap(edges.begin(), edges.size(), CompareEdgesByUpperBound(isLeftGreater)),
   lbEdgeHeap(edges.begin(), edges.size(), CompareEdgesByLowerBound(isLeftGreater)),
