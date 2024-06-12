@@ -126,7 +126,7 @@ netboost <-
                 as.data.frame(scale(datan, center = TRUE, scale = TRUE))
         }
 
-        if (verbose) message("Netboost: Initialising filter step.")
+        if (verbose) message("Netboost: Initialize filter step.")
 
         filter <-
             nb_filter(
@@ -159,7 +159,7 @@ netboost <-
                 )}
         }
         
-        if (verbose) message("Netboost: Initialising distance calculation (",
+        if (verbose) message("Netboost: Initialize distance calculation (",
         method[1],").")
         dist <-
             nb_dist(
@@ -1073,7 +1073,7 @@ nb_summary <- function(#qc_plot = TRUE,
         length(clust_res),
         " trees resulting in ",
         ncol(res[["MEs"]]),
-        " aggreagate measures.\n"
+        " aggregate measures.\n"
     )
     message("Average size of the modules was ",
         mean(table(res[["colors"]][!(res[["colors"]] <= 0)])), ".\n")
