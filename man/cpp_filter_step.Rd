@@ -16,5 +16,5 @@ integer vector
 Single boosting step
 }
 \details{
-Must be initialised before using @see{filter_base}
+Must be initialised before using \code{\link{cpp_filter_base}}
 }

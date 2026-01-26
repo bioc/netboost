@@ -20,7 +20,7 @@ cpp_filter_end <- function() {
 
 #' @title Single boosting step
 #' 
-#' @details Must be initialised before using @see{filter_base}
+#' @details Must be initialised before using \code{\link{cpp_filter_base}}
 #' 
 #' @param col_y Row in data matrix
 #' @return integer vector
