@@ -17,8 +17,6 @@
  *****************************************************************************/
 
 
-using namespace std;
-
 #include "test_heap.cmdline.h"
 #include "Heap.hpp"
 #include "myutils/StreamFromFileNameGenerator.hpp"
@@ -28,6 +26,8 @@ using namespace std;
 #include <algorithm>
 #include <iterator>
 #include <stdlib.h>
+
+using namespace std;
 
 int main(int argc, char** argv) {
   try {
