@@ -412,7 +412,7 @@ public:
         *seq_z_means++ = *tmp_seq_data++ - col_mean;
       
       if (DEBUG)
-        Rprintf( "  DATA POINTER REAL LENGTH: %li / %li dbl (matrix: %d -- max %d)\n",
+        Rprintf( "  DATA POINTER REAL LENGTH: %li / %li dbl (matrix: %zu -- max %zu)\n",
                  (size_t)seq_data - (size_t)data_heap.get(),
                  ((size_t)seq_data - (size_t)data_heap.get()) / sizeof(double),
                  (col+1) * nrow,
@@ -642,7 +642,7 @@ public:
       beta_selected[actual_sel] += actual_update;
       
       if (DEBUG)
-        Rprintf( "C STEP: %d (ACTUAL_SEL: %d, UPDATE: %f)\n   ",
+        Rprintf( "C STEP: %d (ACTUAL_SEL: %zu, UPDATE: %f)\n   ",
                  bstep + 1, actual_sel + 1, actual_update);
     }
     
@@ -715,7 +715,7 @@ void filter_end() {
 
 //' @title Single boosting step
 //' 
-//' @details Must be initialised before using @see{filter_base}
+//' @details Must be initialised before using \code{\link{cpp_filter_base}}
 //' 
 //' @param col_y Row in data matrix
 //' @return integer vector

@@ -23,10 +23,10 @@
  *
  */
 
-using namespace std;
-
 #include "HierarchicalClustering_with_unknown_edges.hpp"
 #include <math.h>
+
+using namespace std;
 
 RCPtr<tHierarchicalClustering::fAverager> tHierarchicalClustering::fAverager::generate(string const & type) {
   if (type == "arithmetic")
@@ -80,10 +80,9 @@ tHierarchicalClustering::tHierarchicalClustering(tHierarchicalClustering::tEdges
    lb_unknown(lb_unknown), // lambda
    ub_unknown(ub_unknown), // psi
    nextClusterId(singletonIdUB), //k
-//    isLeftGreater(0),
   edges(edges),
-  ubEdgeHeap(edges.begin(), edges.size(), CompareEdgesByUpperBound(isLeftGreater)),
-  lbEdgeHeap(edges.begin(), edges.size(), CompareEdgesByLowerBound(isLeftGreater)),
+  ubEdgeHeap(edges.begin(), edges.size(), CompareEdgesByUpperBound(fIsLeftGreater())),
+  lbEdgeHeap(edges.begin(), edges.size(), CompareEdgesByLowerBound(fIsLeftGreater())),
   clusters(singletonIdUB * 2),
    averager(averager),
    IS_ALLOW_INEXACT_MERGES(is_allow_inexact_merges) {

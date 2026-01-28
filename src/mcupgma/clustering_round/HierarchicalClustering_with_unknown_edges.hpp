@@ -147,7 +147,10 @@ public:
     /** Using fIsLeftGreater as a binary_function object **/
     template<typename fDistanceComparator>
     /** Comparator of edges by lower bound **/
-    struct fCompareEdgesByLowerBound : public binary_function<tEdge, tEdge, bool> {
+    struct fCompareEdgesByLowerBound {
+	using first_argument_type = tEdge;
+	using second_argument_type = tEdge;
+	using result_type = bool;
 	fCompareEdgesByLowerBound(fDistanceComparator compareDistances = fDistanceComparator()) :
       compareDistances(compareDistances) {
 	}
@@ -174,7 +177,10 @@ public:
   }
    
   template<typename fDistanceComparator>
-  struct fCompareEdgesByUpperBound : public binary_function<tEdge, tEdge, bool> {
+  struct fCompareEdgesByUpperBound {
+    using first_argument_type = tEdge;
+    using second_argument_type = tEdge;
+    using result_type = bool;
     fCompareEdgesByUpperBound(fDistanceComparator compareDistances = fDistanceComparator()) :
       compareDistances(compareDistances) {
     }
@@ -256,7 +262,9 @@ private:
    /*************************************
     * struct tHierarchicalClustering::fIsClusterInvalid
     */
-   struct fIsClusterInvalid : unary_function<tClusterId, bool> {
+   struct fIsClusterInvalid {
+      using argument_type = tClusterId;
+      using result_type = bool;
       //c-tor
       fIsClusterInvalid(vector<tCluster> const & clusters) :
          clusters(clusters) {

@@ -1,15 +1,14 @@
 Package: netboost
 Type: Package
 Title: Network Analysis Supported by Boosting
-Version: 2.18.0
-Date: 2024-06-12
+Version: 2.18.1
+Date: 2026-01-28
 Authors@R: c(person("Pascal", "Schlosser", role = c("aut", "cre"),
                     email = "pascal.schlosser@uniklinik-freiburg.de"),
              person("Jochen", "Knaus", role = c("aut", "ctb"),
                     email = "jo@imbi.uni-freiburg.de"),
              person("Yaniv", "Loewenstein", role = c("aut")))
 Description: Boosting supported network analysis for high-dimensional omics applications. 
-    This package comes bundled with the MC-UPGMA clustering package by Yaniv Loewenstein.
 Depends:
   R (>= 4.0.0)
 biocViews:
@@ -36,14 +35,14 @@ Imports:
   impute,
   colorspace,
   methods,
-  BiocStyle,
   R.utils
 LinkingTo:
   Rcpp,
   RcppParallel
 Suggests:
   knitr,
-  rmarkdown
+  rmarkdown,
+  BiocStyle
 VignetteBuilder: knitr
 SystemRequirements:
   GNU make,
@@ -58,4 +57,4 @@ License: GPL-3
 URL: https://bioconductor.org/packages/release/bioc/html/netboost.html
 BugReports: pascal.schlosser@uniklinik-freiburg.de
 Encoding: UTF-8
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.3

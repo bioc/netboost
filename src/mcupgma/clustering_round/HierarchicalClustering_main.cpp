@@ -76,13 +76,10 @@
 
 
 
-using namespace std;
-
-
 /** Some optional lonshy macros **/
 
 //some debug printing for lonshy
-//#define VERBOSE 
+//#define VERBOSE
 
 
 #define COUNT_MERGES
@@ -97,6 +94,8 @@ using namespace std;
 #include <myutils/StreamFromFileNameGenerator.hpp>
 #include <myutils/Exception.hpp>
 #include <iterator>
+
+using namespace std;
 
 
 
