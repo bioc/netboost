@@ -220,27 +220,16 @@ calculate_adjacency <-
             cores = getOption("mc.cores",2L)) {
         if(method[1] == "spearman"){
             datan <- apply(X=datan,MARGIN=2,FUN=rank)
-            return(unlist(parallel::mclapply(X=seq(
-                from = 1,
-                to = nrow(filter),
-                by = 1
-            ),
-            FUN=function(i) {
-                abs(WGCNA::cor(datan[, filter[i, 1]],
-                               datan[, filter[i, 2]], method = "pearson")) ^ soft_power
-            },mc.cores=cores)))
+            use_method <- "pearson"
         } else {
-            return(unlist(parallel::mclapply(X=seq(
-                from = 1,
-                to = nrow(filter),
-                by = 1
-            ),
-            FUN=function(i) {
-                abs(WGCNA::cor(datan[, filter[i, 1]],
-                               datan[, filter[i, 2]], method = method[1])) ^ soft_power
-            },mc.cores=cores)))
+            use_method <- method[1]
         }
-             
+        datan <- as.matrix(datan)
+        abs(vapply(seq_len(nrow(filter)), function(i) {
+            WGCNA::cor(datan[, filter[i, 1]],
+                       datan[, filter[i, 2]],
+                       method = use_method)
+        }, numeric(1))) ^ soft_power
     }
 
 #' Calculate distance (external wrapper for internal C++ function)
