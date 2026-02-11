@@ -1281,53 +1281,37 @@ nb_filter <-
         } else if (filter_method[1] == "skip"){
             if (verbose) message(paste("Netboost: Filtering (skip)"))
             filter <- t(utils::combn(x=ncol(datan),m=2))
-        } else if (filter_method[1] == "spearman"){
+        } else if (filter_method[1] %in% c("spearman", "pearson")){
             if (verbose) message(paste0("Netboost: Filtering (",
             filter_method[1],")"))
-            combs <- utils::combn(x=ncol(datan),m=2)
             n <- nrow(datan)
             cor_thres <- stats::qt((1-0.025),df=(n-2))/sqrt(n-2)
-            datan <- apply(X=datan,MARGIN=2,FUN=rank)
-            index <- (parallel::mclapply(X=seq(
-                from = 1,
-                to = ncol(combs),
-                by = 1
-            ),
-            FUN=function(i) {
-			r <- abs(stats::cor(datan[,combs[1,i]], datan[,combs[2,i]], use = "pairwise.complete.obs", method = "pearson"))
-#                r <- abs(WGCNA::cor(datan[, combs[1,i]],
-#                               datan[, combs[2,i]], method = "pearson"))
-                return((r/sqrt(1-r^2)) > cor_thres)
-            },mc.cores=cores))
-            filter <- t(combs[,unlist(index)])
-        } else if (filter_method[1] == "pearson"){
-            if (verbose) message(paste0("Netboost: Filtering (",
-            filter_method[1],")"))
-            combs <- utils::combn(x=ncol(datan),m=2)
-            n <- nrow(datan)
-            cor_thres <- stats::qt((1-0.025),df=(n-2))/sqrt(n-2)
-            index <- (parallel::mclapply(X=seq(
-                from = 1,
-                to = ncol(combs),
-                by = 1
-            ),
-            FUN=function(i) {
-			r <- abs(stats::cor(datan[,combs[1,i]], datan[,combs[2,i]], use = "pairwise.complete.obs", method = filter_method[1]))
-#                r <- abs(WGCNA::cor(datan[, combs[1,i]],
-#                               datan[, combs[2,i]], method = filter_method[1]))
-                return((r/sqrt(1-r^2)) > cor_thres)
-            },mc.cores=cores))
-            filter <- t(combs[,unlist(index)])
+            if (filter_method[1] == "spearman") {
+                datan <- apply(X=datan,MARGIN=2,FUN=rank)
+            }
+            cor_mat <- abs(stats::cor(datan,
+                           use = "pairwise.complete.obs",
+                           method = "pearson"))
+            t_stat <- cor_mat / sqrt(1 - cor_mat^2)
+            passes <- which(t_stat > cor_thres & upper.tri(cor_mat),
+                            arr.ind = TRUE)
+            filter <- passes[, c(1, 2), drop = FALSE]
+            colnames(filter) <- NULL
+            rownames(filter) <- NULL
         } else if (filter_method[1] %in% c("kendall")){
             if (verbose) message(paste0("Netboost: Filtering (",
             filter_method[1],")"))
-            combs <- utils::combn(x=ncol(datan),m=2)
-            index <- parallel::mclapply(seq_len(ncol(combs)),FUN=function(i){
-            stats::cor.test(x=datan[,combs[1,i]],y=datan[,
-              combs[2,i]],alternative = "two.sided",
-              method = filter_method[1])$p.value < 0.05
-            }, mc.cores = cores)
-            filter <- t(combs[,unlist(index)])
+            n <- nrow(datan)
+            cor_mat <- stats::cor(datan, use = "pairwise.complete.obs",
+                                  method = "kendall")
+            # Kendall's tau: z = tau * sqrt(9*n*(n-1)/(2*(2*n+5)))
+            z_factor <- sqrt(9 * n * (n - 1) / (2 * (2 * n + 5)))
+            p_vals <- 2 * stats::pnorm(-abs(cor_mat) * z_factor)
+            passes <- which(p_vals < 0.05 & upper.tri(cor_mat),
+                            arr.ind = TRUE)
+            filter <- passes[, c(1, 2), drop = FALSE]
+            colnames(filter) <- NULL
+            rownames(filter) <- NULL
         } else {
             stop("filter_method in nb_filter not supported.")
         }
