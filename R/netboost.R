@@ -210,8 +210,8 @@ netboost <-
 #'   based on the scale free topology criterion if unspecified.
 #' @param method    A character string specifying the method to be used for
 #'   correlation coefficients.
-#' @param cores    Integer. Amount of CPU cores used (<=1 : sequential).
-#' @return Vector with adjacencies for the filter
+#' @param cores    Deprecated. Kept for backward compatibility but unused.
+#' @return Numeric vector with adjacencies for the filter
 calculate_adjacency <-
     function(datan,
              filter,

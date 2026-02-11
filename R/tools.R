@@ -8,7 +8,7 @@ netboostPackagePath <- function() {
 #' Returns the absolute path to temporary folder of the package.
 #' To change temporary path, use normal R variables (TEMPDIR etc).
 #'
-#' @return Absolute path for "exec" folder
+#' @return Absolute path for temporary folder
 netboostTmpPath <- function() {
     return(file.path(tempdir(), "netboost"))
 }
