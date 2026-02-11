@@ -1,3 +1,9 @@
+Changes in version 2.19.3 (2026-02-XX)
++ Consensus network calling.
+
+Changes in version 2.19.2 (2026-02-11)
++ Speed up of filter calculation.
+
 Changes in version 1.99.4 (2021-04-15)
 + Removal of MCUPGMA-dependencies for smaller networks.
 

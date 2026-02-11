@@ -14,13 +14,16 @@
 #' @importFrom R.utils gzip isGzipped
 #' @importFrom parallel mclapply
 #' @importFrom colorspace rainbow_hcl
-#' @importFrom grDevices dev.off gray pdf
-#' @importFrom graphics abline layout par plot
-#' @importFrom stats as.dendrogram as.dist cor cov prcomp hclust order.dendrogram pt
+#' @importFrom grDevices dev.off gray pdf colorRampPalette adjustcolor
+#' @importFrom graphics abline layout par plot barplot text pie image axis mtext
+#'   title plot.new
+#' @importFrom stats as.dendrogram as.dist cor cov prcomp hclust
+#'   order.dendrogram pt cutree lm setNames
 #' @importFrom dynamicTreeCut cutreeDynamic indentSpaces printFlush
 #' @importFrom impute impute.knn
 #' @importFrom WGCNA allowWGCNAThreads mergeCloseModules plotDendroAndColors
-#' @importFrom WGCNA moduleColor.getMEprefix pickSoftThreshold
+#' @importFrom WGCNA moduleColor.getMEprefix pickSoftThreshold TOMsimilarity
+#'   labels2colors
 #' @importFrom utils data packageDescription read.table write.table
 #' @importFrom methods is
 #'
