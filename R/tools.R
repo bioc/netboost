@@ -1,3 +1,25 @@
+#' Returns the absolute path to "exec" folder in the package.
+#'
+#' @return Absolute path of installed package
+netboostPackagePath <- function() {
+    return(system.file(package="netboost"))
+}
+
+#' Returns the absolute path to temporary folder of the package.
+#' To change temporary path, use normal R variables (TEMPDIR etc).
+#'
+#' @return Absolute path for "exec" folder
+netboostTmpPath <- function() {
+    return(file.path(tempdir(), "netboost"))
+}
+
+#' Returns the absolute path to folder with mcupgma executables and scripts.
+#'
+#' @return Absolute path for "mcupgma" folder
+netboostMCUPGMAPath <- function() {
+    return(file.path(netboostPackagePath(), "mcupgma"))
+}
+
 #' Execute a program/script from the installed MCUPGMA suite.
 #'
 #' @param exec    Name of the file of the executable.
