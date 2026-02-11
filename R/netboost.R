@@ -961,45 +961,45 @@ nb_summary <- function(#qc_plot = TRUE,
             if (col != 0 | length(unique(tmp.col)) == 1) {
                 n_MEs <- n_MEs + 1
                 tmp.col.new[tmp.col == col] <- n_MEs
-                colnames(tmp_MEs_new)[grepl(pattern = paste0("ME", col, "_"),
+                colnames(tmp_MEs_new)[grepl(pattern = paste0("^ME", col, "_"),
                                             colnames(tmp_MEs))] <-
                     gsub(
-                        pattern = paste0("ME",
+                        pattern = paste0("^ME",
                                          col, "_"),
                         replacement = paste0("ME", (n_MEs), "_"),
-                        colnames(tmp_MEs_new)[grepl(pattern = paste0("ME",
+                        colnames(tmp_MEs_new)[grepl(pattern = paste0("^ME",
                                                                      col, "_"),
                                                     colnames(tmp_MEs))]
                     )
-                colnames(tmp_rotation_new)[grepl(pattern = paste0("ME", col,
+                colnames(tmp_rotation_new)[grepl(pattern = paste0("^ME", col,
                                                                   "_"),
                                                  colnames(tmp_rotation))] <-
                     gsub(
-                        pattern = paste0("ME", col,
+                        pattern = paste0("^ME", col,
                                          "_"),
                         replacement = paste0("ME", (n_MEs), "_"),
                         colnames(tmp_rotation_new)[grepl(pattern =
-                                                paste0("ME", col, "_"),
+                                                paste0("^ME", col, "_"),
                                                 colnames(tmp_rotation))]
                     )
             }
             if (col == 0 & length(unique(tmp.col)) != 1) {
                 n_MEs_background <- n_MEs_background + 1
                 tmp.col.new[tmp.col == col] <- -n_MEs_background
-                colnames(tmp_MEs_new)[grepl(pattern = "ME0_",
+                colnames(tmp_MEs_new)[grepl(pattern = "^ME0_",
                                             colnames(tmp_MEs))] <-
                     gsub(
-                        pattern = "ME0_",
+                        pattern = "^ME0_",
                         replacement = paste0("ME0_", n_MEs_background, "_"),
-                        colnames(tmp_MEs_new)[grepl(pattern = "ME0_",
+                        colnames(tmp_MEs_new)[grepl(pattern = "^ME0_",
                                                     colnames(tmp_MEs))]
                     )
-                colnames(tmp_rotation_new)[grepl(pattern = "ME0_",
+                colnames(tmp_rotation_new)[grepl(pattern = "^ME0_",
                                                  colnames(tmp_rotation))] <-
                     gsub(
-                        pattern = "ME0_",
+                        pattern = "^ME0_",
                         replacement = paste0("ME0_", n_MEs_background, "_"),
-                        colnames(tmp_rotation_new)[grepl(pattern = "ME0_",
+                        colnames(tmp_rotation_new)[grepl(pattern = "^ME0_",
                                                      colnames(tmp_rotation))]
                     )
             }
