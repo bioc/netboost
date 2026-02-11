@@ -188,7 +188,7 @@ nb_consensus <- function(
                    n_after_filter = numeric(n_ds),
                    n_dir_filtered = 0,
                    n_consensus = 0)
-    BS <- min(2000L, p)   # block size for memory-safe operations
+    BS <- min(40000L, p)   # block size for memory-safe operations
 
     # ==================================================================
     # STEP 1+2: Filtered adjacency per dataset
