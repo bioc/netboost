@@ -4,7 +4,8 @@ Title: Network Analysis Supported by Boosting
 Version: 2.19.2
 Date: 2026-02-11
 Authors@R: c(person("Pascal", "Schlosser", role = c("aut", "cre"),
-                    email = "pascal.schlosser@uniklinik-freiburg.de"),
+                    email = "pascal.schlosser@uniklinik-freiburg.de",
+                    comment = c(ORCID = "0000-0002-8460-0462")),
              person("Jochen", "Knaus", role = c("aut", "ctb"),
                     email = "jo@imbi.uni-freiburg.de"),
              person("Yaniv", "Loewenstein", role = c("aut")))
