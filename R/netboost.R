@@ -1673,6 +1673,8 @@ nb_moduleEigengenes <-
                 nb_pca_x <- svd1[["v"]][, seq_len(k), drop = FALSE]
                 nb_pca_rotation <- t(t(svd1[["u"]][, seq_len(k),
                     drop = FALSE]) / svd1[["d"]][seq_len(k)])
+                rownames(nb_pca_rotation) <- rownames(datModule)
+                colnames(nb_pca_rotation) <- paste0("PC", seq_len(k))
                 if (verbose > 5)
                     message(paste(spaces, " ...calculating PVE"))
                 veMat <-
