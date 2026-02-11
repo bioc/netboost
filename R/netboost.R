@@ -1669,15 +1669,10 @@ nb_moduleEigengenes <-
                     svd(datModule,
                         nu = min(n, p, n_pc),
                         nv = min(n, p, n_pc))
-                nb_PCA <- stats::prcomp(
-                        x = t(datModule),
-                        retx = TRUE,
-                        center = FALSE,
-                        scale. = FALSE,
-                        tol = NULL,
-                        rank. = NULL)
-                nb_PCA[["x"]] <- t(t(nb_PCA[["x"]]) / svd1[["d"]])
-                nb_PCA[["rotation"]] <- t(t(nb_PCA[["rotation"]]) / svd1[["d"]])
+                k <- min(n, p, n_pc)
+                nb_pca_x <- svd1[["v"]][, seq_len(k), drop = FALSE]
+                nb_pca_rotation <- t(t(svd1[["u"]][, seq_len(k),
+                    drop = FALSE]) / svd1[["d"]][seq_len(k)])
                 if (verbose > 5)
                     message(paste(spaces, " ...calculating PVE"))
                 veMat <-
@@ -1740,7 +1735,7 @@ nb_moduleEigengenes <-
                         ), i]) > nb_min_varExpl
                     ), nVarExplained))
                 nb_PrinComps <-
-                    base::cbind(nb_PrinComps, nb_PCA[["x"]][, seq(from = 1,
+                    base::cbind(nb_PrinComps, nb_pca_x[, seq(from = 1,
                                                        to = nb_n_pcs,
                                                        by = 1)])
                 colnames(nb_PrinComps)[seq(
@@ -1757,7 +1752,7 @@ nb_moduleEigengenes <-
                         by = 1
                     )
                 )
-                colnames(nb_PCA[["rotation"]])[seq(from = 1,
+                colnames(nb_pca_rotation)[seq(from = 1,
                                               to = nb_n_pcs,
                                               by = 1)] <- paste0(
                                                   moduleColor.getMEprefix(),
@@ -1770,7 +1765,7 @@ nb_moduleEigengenes <-
                                                   )
                                               )
                 rotation[[i]] <-
-                    nb_PCA[["rotation"]][, seq(from = 1,
+                    nb_pca_rotation[, seq(from = 1,
                                           to = nb_n_pcs,
                                           by = 1),
                                     drop = FALSE]
