@@ -1114,8 +1114,8 @@ nb_transfer <-
              scale = FALSE,
              robust_PCs = FALSE,
              only_module_membership = FALSE) {
-        if (!exists("new_data"))
-            stop("datan must be provided")
+        if (is.null(new_data))
+            stop("new_data must be provided")
         
         if (!(is.data.frame(new_data) &&
               (nrow(new_data) > 0) && (ncol(new_data) >
@@ -1208,7 +1208,7 @@ nb_filter <-
                                2L),
              mode = 2L,
              verbose = getOption("verbose")) {
-        if (!exists("datan"))
+        if (is.null(datan))
             stop("datan must be provided")
         
         if (!(is.data.frame(datan) &&
@@ -1351,7 +1351,7 @@ nb_plot_dendro <-
              labels = FALSE,
              main = "",
              colorsrandom = FALSE) {
-        if (!exists("nb_summary"))
+        if (is.null(nb_summary))
             stop("Netboost output (nb_summary) must be provided.")
         
         colorHeight <- 0.2
