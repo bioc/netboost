@@ -30,10 +30,6 @@ nbCheckPrg <- function(prg, txt) {
         return(NULL)
 }
 
-# Should never be reached, as in DESCRIPTION and .BBSoptions.
-if (WINDOWS)
-    stop(nbErrorMsg("mcupgma build on Windows is currently not supported"))
-
 # Check if required prequisites for mcupgma are all available
 # (as in SystemRequirements in DESCRIPTION + others)
 cnt <- c(nbCheckPrg("make", "(GNU) make"),

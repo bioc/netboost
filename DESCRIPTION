@@ -52,6 +52,7 @@ SystemRequirements:
   Perl,
   Gzip
 OS_type: unix
+Config/Bioconductor/UnsupportedPlatforms: windows
 ByteCompile: yes
 NeedsCompilation: yes
 LazyData: true
