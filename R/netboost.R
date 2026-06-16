@@ -225,11 +225,30 @@ calculate_adjacency <-
             use_method <- method[1]
         }
         datan <- as.matrix(datan)
-        abs(vapply(seq_len(nrow(filter)), function(i) {
-            WGCNA::cor(datan[, filter[i, 1]],
-                       datan[, filter[i, 2]],
-                       method = use_method)
-        }, numeric(1))) ^ soft_power
+        if (use_method == "pearson") {
+            if ((as.numeric(ncol(datan))^2 * 8) <= 5e8) {
+                cor_mat <- WGCNA::cor(datan, method = use_method)
+                abs(cor_mat[cbind(filter[, 1], filter[, 2])]) ^ soft_power
+            } else {
+                z <- sweep(datan, 2, colMeans(datan), "-")
+                z <- sweep(z, 2, sqrt(colSums(z^2)), "/")
+                ne <- nrow(filter)
+                adj <- numeric(ne)
+                chunk <- 200000L
+                for (start in seq.int(1, ne, by = chunk)) {
+                    idx <- seq.int(start, min(start + chunk - 1L, ne))
+                    adj[idx] <- colSums(z[, filter[idx, 1], drop = FALSE] *
+                                        z[, filter[idx, 2], drop = FALSE])
+                }
+                abs(adj) ^ soft_power
+            }
+        } else {
+            abs(vapply(seq_len(nrow(filter)), function(i) {
+                WGCNA::cor(datan[, filter[i, 1]],
+                           datan[, filter[i, 2]],
+                           method = use_method)
+            }, numeric(1))) ^ soft_power
+        }
     }
 
 #' Calculate distance (external wrapper for internal C++ function)
@@ -336,9 +355,9 @@ nb_mcupgma <-
                  " with more than 5 million features.")
         } else if (max_singleton < 3e+04) {
         tmp_dist <- rep(1,max_singleton*(max_singleton-1)/2)
-        for(i in 1:nrow(filter)){
-                tmp_dist[max_singleton*(filter[i,1]-1) - filter[i,1]*(filter[i,1]-1)/2 + filter[i,2]-filter[i,1]] <- dist[i]
-        }
+        lin_idx <- max_singleton*(filter[,1]-1) -
+            filter[,1]*(filter[,1]-1)/2 + filter[,2]-filter[,1]
+        tmp_dist[lin_idx] <- dist
         class(tmp_dist) <- "dist"
         attr(tmp_dist, 'Size') <- max_singleton
 
@@ -495,9 +514,7 @@ tree_dendro <- function(tree,
         -dendro[["merge"]][dendro[["merge"]] <= cutpoint]
     dendro[["merge"]][dendro[["merge"]] > 0] <-
         dendro[["merge"]][dendro[["merge"]] > 0] - cutpoint
-    dendro[["merge"]] <- apply(dendro[["merge"]], c(1, 2), function(x) {
-        (as.integer(x))
-    })
+    storage.mode(dendro[["merge"]]) <- "integer"
     dendro[["height"]] <- tree_cluster[, 3]
     dendro[["order"]] <- seq(from = 1, to = cutpoint, by = 1)
     dendro[["labels"]] <- colnames_tree
@@ -1277,7 +1294,8 @@ nb_filter <-
                 )))
             }))
 
-        filter <- unique(t(apply(filter, 1, sort)))
+        filter <- unique(cbind(pmin(filter[, 1], filter[, 2]),
+                               pmax(filter[, 1], filter[, 2])))
         } else if (filter_method[1] == "skip"){
             if (verbose) message(paste("Netboost: Filtering (skip)"))
             filter <- t(utils::combn(x=ncol(datan),m=2))
