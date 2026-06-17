@@ -1,3 +1,6 @@
+Changes in version 2.21.1 (2026-06-17)
++ Improved computational efficiency.
+
 Changes in version 2.19.3 (2026-02-12)
 + Consensus network calling.
 

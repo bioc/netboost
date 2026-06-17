@@ -1,8 +1,8 @@
 Package: netboost
 Type: Package
 Title: Network Analysis Supported by Boosting
-Version: 2.21.0
-Date: 2026-02-12
+Version: 2.21.1
+Date: 2026-06-17
 Authors@R: c(person("Pascal", "Schlosser", role = c("aut", "cre"),
                     email = "pascal.schlosser@uniklinik-freiburg.de",
                     comment = c(ORCID = "0000-0002-8460-0462")),
