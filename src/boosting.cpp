@@ -41,35 +41,33 @@
 #include <vector>
 #include <limits>
 
-// Base flags from autotools.
-#include "config.h"
-
-// If PACKAGE_NAME is defined, complete autotools build is assumed.
-#ifdef PACKAGE_NAME
-  #ifndef HAVE_AVX
-    #define NO_AVX
-  #endif
-  #ifndef HAVE_FMA3
-    #define NO_FMA
-  #endif
-// "Traditional" build, using NO_AVX/NO_FMA flags.
+// CPU-architecture-independent SIMD selection.
+//
+// The package is built without any build-host CPU detection (no -mavx baked in),
+// so the SAME binary runs on heterogeneous clusters that mix CPU models. The AVX
+// kernels are compiled (only on x86, and with a function-level target attribute
+// so global AVX flags are unnecessary) and selected at RUNTIME via
+// __builtin_cpu_supports(). Non-x86 architectures (e.g. ARM) and x86 CPUs
+// without AVX always use the portable scalar path.
+#if (defined(__x86_64__) || defined(__i386__) || defined(_M_X64) || \
+     defined(_M_IX86)) && (defined(__GNUC__) || defined(__clang__))
+  #define NB_X86 1
+  #include <x86intrin.h>
+  // Emit AVX code for a single function without a global -mavx flag.
+  #define NB_AVX_TARGET __attribute__((target("avx")))
 #else
-  #ifdef NO_AVX
-    #undef HAVE_AVX
-  #endif
-  #ifdef NO_FMA
-    #undef HAVE_FMA3
-  #endif
+  #define NB_AVX_TARGET
 #endif
 
-// GCC includes all AVX/SSE intrinsics
-// @TODO Recheck MSVC & Intel for their names.
-// GCC/Clang: #include <x86intrin.h> include all available.
-#if defined(HAVE_AVX) or defined(HAVE_FMA3)
-// Contains FMA commands if FMA is available.
-// #include <immintrin.h>
-#include <x86intrin.h>
+// True if the CURRENTLY RUNNING CPU supports AVX.
+inline bool nb_cpu_has_avx() {
+#ifdef NB_X86
+  __builtin_cpu_init();
+  return __builtin_cpu_supports("avx");
+#else
+  return false;
 #endif
+}
 
 
 using namespace Rcpp;
@@ -172,9 +170,10 @@ private:
    * @param[in]  len  Length of vectors
    * @return Sum of vector multiplication of a and b
    */
-  inline double vecmul_sum_avx(const double* __restrict a, const double* __restrict b,
-                               const size_t len) {
-#ifdef HAVE_AVX
+  NB_AVX_TARGET
+  double vecmul_sum_avx(const double* __restrict a, const double* __restrict b,
+                        const size_t len) {
+#ifdef NB_X86
     double avx_sum = 0;
     
     // AVX only comes into account if more than 4 doubles are around.
@@ -242,11 +241,12 @@ private:
    * @return Sum of a*b
    */
   //  double vecmul_sum_avx_aligned(double *a, double *b, const size_t len) __attribute__ ((__option__("avx")));
+  NB_AVX_TARGET
   double vecmul_sum_avx_aligned(double * __restrict ar, double * __restrict br,
                                 const size_t len) {
-#ifdef HAVE_AVX
+#ifdef NB_X86
     __m256d sum = _mm256_setzero_pd();
-    
+
     // Using GCC the compiler can be informed data is aligned (may help on auto
     // unrolling of loop).
 #ifdef __GNUG__
@@ -254,8 +254,8 @@ private:
     auto b = (double *) __builtin_assume_aligned(br, ALIGN_BYTES);
 #else
     auto a = ar;
-    auto b = ar;
-#endif    
+    auto b = br;
+#endif
     
     //  double *end = a + (len / 4) + ((len % 4) != 0);
     
@@ -691,13 +691,11 @@ int mode = 0;
 // [[Rcpp::export(name=cpp_filter_base)]]
 void filter_base(const NumericMatrix &data, unsigned int stepno = 20,
                  int mode_ = 2) {
-  // If AVX is switched off, mode is always 0.
-#ifndef HAVE_AVX
-  mode = 0;
-#else
-  mode = mode_;
-#endif
-  
+  // Use the AVX kernel only when explicitly requested (mode 2, the default) AND
+  // the CPU we are running on actually supports AVX; otherwise use the portable
+  // scalar path. This makes the same binary safe on heterogeneous clusters.
+  mode = (mode_ == 2 && nb_cpu_has_avx()) ? 2 : 0;
+
   if (boost == nullptr)
     boost = new Boosting(data, stepno);
 }

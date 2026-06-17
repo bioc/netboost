@@ -1,1 +1,0 @@
-export INSTALL_PATH := $(SCRIPTS_DIR)..

@@ -1,0 +1,11 @@
+# netboost native code (unix / macOS).
+#
+# No build-host CPU detection and no SIMD flags are set here: the AVX kernel in
+# boosting.cpp is compiled with a per-function target attribute and selected at
+# runtime via __builtin_cpu_supports(), so the same binary runs correctly on
+# heterogeneous clusters (AVX / non-AVX nodes) and on non-x86 architectures
+# (e.g. ARM, which uses the portable scalar path).
+#
+# Rcpp and RcppParallel headers are provided through 'LinkingTo' in DESCRIPTION;
+# no extra compile or link flags are required (RcppParallel uses its header-only
+# TinyThread backend).

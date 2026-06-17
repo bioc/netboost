@@ -114,8 +114,8 @@ netboost <-
 
         if (ncol(datan) > 5e+06) {
             stop(
-                "A bug in sparse UPGMA currently prevents analyses",
-                " with more than 5 million features."
+                "Sparse UPGMA clustering is currently limited to at most",
+                " 5 million features."
             )
         }
 
@@ -347,12 +347,9 @@ nb_mcupgma <-
              max_singleton,
              cores = getOption("mc.cores", 2L),
              verbose = getOption("verbose")) {
-        # Deletes all files under netboostTmpPath(), esp. clustering/iteration
-        netboostTmpCleanup()
-        
         if (max_singleton > 5e+06) {
-            stop("A bug in sparse UPGMA currently prevents analyses",
-                 " with more than 5 million features.")
+            stop("Sparse UPGMA clustering is currently limited to at most",
+                 " 5 million features.")
         } else if (max_singleton < 3e+04) {
         tmp_dist <- rep(1,max_singleton*(max_singleton-1)/2)
         lin_idx <- max_singleton*(filter[,1]-1) -
@@ -372,74 +369,29 @@ nb_mcupgma <-
         tmp2 <- cbind(tmp2,tmp$height,(max_singleton+1):(max_singleton+nrow(tmp2)))
         colnames(tmp2) <- c("cluster_id1","cluster_id2", "distance", "cluster_id3")
         return(as.matrix(tmp2))
-        } else {       
-        if (!dir.create(file.path(netboostTmpPath(), "clustering")))
-            stop("Unable to create: ",
-                 file.path(netboostTmpPath(), "clustering"))
-        
-        file_dist_edges <-
-            file.path(netboostTmpPath(), "clustering", "dist.edges")
-        file_dist_tree <-
-            file.path(netboostTmpPath(), "clustering", "dist.mcupgma_tree")
-        
-        # write.table(file='clustering/dist.edges',
-        write.table(
-            file = file_dist_edges,
-            cbind(
-                format(filter, scientific = FALSE,
-                       trim = TRUE),
-                format(dist, scientific = FALSE, trim = TRUE)
-            ),
-            row.names = FALSE,
-            col.names = FALSE,
-            sep = "\t",
-            quote = FALSE
-        )
-        
-        # Compress edges file (inplace)
-        file_dist_edges_gz <- paste(file_dist_edges, ".gz", sep="")
-        ret <- R.utils::gzip(file_dist_edges, destname = file_dist_edges_gz,
-                             overwrite = TRUE)
-        
-        if (attr(ret, "nbrOfBytes") <= 0 || !R.utils::isGzipped(file_dist_edges_gz))
-            warning(paste("Gzip maybe failed on:", file_dist_edges,
-                          "Return:", as.character(ret),
-                          " Bytes: ", attr(ret, "nbrOfBytes")))
-        
-        ret <-
-            mcupgma_exec(
-                exec = "cluster.pl",
-                "-max_distance",
-                1,
-                "-max_singleton",
-                max_singleton,
-                "-iterations 1000 -heap_size 10000000 -num_hash_buckets 40",
-                "-jobs",
-                cores,
-                "-retries 1",
-                "-output_tree_file",
-                file_dist_tree,
-                "-split_unmodified_edges",
-                max(cores,2L),
-                file_dist_edges_gz,
-                console = FALSE
-            )
-        
-        if (verbose>1)
-            message(ret)
-        
-        if (!file.exists(file_dist_tree) ||
-            file.info(file_dist_tree)[["size"]] == 0)
-            stop("No output file created. mcupgma error.")
-        
-        return(as.matrix(
-            read.table(
-                file = file_dist_tree,
-                row.names = NULL,
-                col.names = c("cluster_id1",
-                              "cluster_id2", "distance", "cluster_id3")
-            )
-        ))
+        } else {
+        ## Sparse average-linkage (UPGMA) clustering through the in-package C++
+        ## reimplementation of MC-UPGMA (Loewenstein et al. 2008). Missing pairs
+        ## are treated as distance 1 (= max_distance), reproducing the behaviour
+        ## of the previously bundled external clustering tool.
+        ##
+        ## The legacy pipeline serialised the edge distances to a text file with
+        ## format(dist, scientific = FALSE) (7 significant digits) before the
+        ## external clusterer read them back. Reproduce that rounding so results
+        ## remain byte-identical to earlier netboost versions.
+        dist <- as.numeric(format(dist, scientific = FALSE, trim = TRUE))
+
+        forest <- cpp_mcupgma(
+            as.integer(filter[, 1]),
+            as.integer(filter[, 2]),
+            dist,
+            as.numeric(max_singleton),
+            1)
+
+        if (nrow(forest) == 0L)
+            stop("Sparse UPGMA produced no merges (empty or invalid input).")
+
+        return(forest)
         }
     }
 
@@ -1247,8 +1199,8 @@ nb_filter <-
         }
         
         if (ncol(datan) > 5e+06) {
-            stop("A bug in sparse UPGMA currently prevents analyses ",
-                       "with more than 5 million features.")
+            stop("Sparse UPGMA clustering is currently limited to at most ",
+                       "5 million features.")
         }
         
         if(filter_method[1] == "boosting"){
@@ -1879,85 +1831,3 @@ nb_moduleEigengenes <-
             rotation = rotation
         )
     }
-
-## #' Example to get access to the MCUPGMA executables.
-## #' 
-## #' @examples
-## #' mcupgma_example()
-## #' @export
-## mcupgma_example <- function() {
-##     exec <- netboostMCUPGMAPath()
-##     files <- Sys.glob(file.path(exec, "*"))
-##     paste("Available MCUPGMA executables and scripts under:", exec)
-##     print(sapply(files, basename, USE.NAMES = FALSE))
-## }
-
-## #' Test/example code. Applies netboost to the TCGA-AML CHR18 DNA methylation and
-## #' gene expression data supplied with the package.
-## #'
-## #' @param cores Integer. CPU cores to use.
-## #' @param keep Logical. Keep mcupgma intermediate files.
-## #' @return Netboost result
-## #'
-## #' @examples
-## #' nb_example()
-## #'
-## #' @export
-# nb_example <-
-#     function(cores = getOption("mc.cores", 2L),
-#              keep = FALSE) {
-#         # Keep data local.
-#         exa_env <- new.env()
-#         
-#         # load data methylation and RNA data 180 patients x 5283 features
-#         data("tcga_aml_meth_rna_chr18",
-#              package = "netboost",
-#              envir = exa_env)
-#         
-#         pdfFile <- file.path(tempdir(), "results_netboost.pdf")
-#         
-#         # pdf(file=file.path(getwd(), 'results_netboost.pdf'), width = 30)
-#         pdf(file = pdfFile, width = 30)
-#         results <-
-#             netboost(
-#                 datan = exa_env[["tcga_aml_meth_rna_chr18"]],
-#                 stepno = 20L,
-#                 soft_power = 3L,
-#                 min_cluster_size = 10L,
-#                 n_pc = 2,
-#                 scale = TRUE,
-#                 ME_diss_thres = 0.25
-#             )
-#         # set.seed(1234)
-#         nb_plot_dendro(nb_summary = results,
-#                        labels = TRUE,
-#                        colorsrandom = TRUE)
-#         dev.off()
-#         
-#         if (file.exists(pdfFile)) {
-#             message(paste0("PDF created:", pdfFile))
-#             
-#             # If default PDF viewer is assigned, try to show PDF.
-#             if (!is.null(getOption("pdfviewer"))) {
-#       #          system2(getOption("pdfviewer"), pdfFile)
-#             }
-#         }
-#         
-#         ### Transfer results to the same data (bug check)
-#         ME_transfer <-
-#             nb_transfer(
-#                 nb_summary = results,
-#                 new_data = exa_env[["tcga_aml_meth_rna_chr18"]],
-#                 scale = TRUE
-#             )
-#         
-#         all(round(results[["MEs"]], 12) == round(ME_transfer, 12))
-#         
-#         # Cleanup all produced temporary filed (esp. clustering/iteration_*)
-#         if (!keep)
-#             netboostTmpCleanup()
-#         else
-#             message(paste("Kept MCUPGMA temporary files in:", netboostTmpPath()))
-#         
-#         invisible(results)
-#     }

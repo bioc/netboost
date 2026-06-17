@@ -1,3 +1,20 @@
+Changes in version 2.21.2 (2026-06-17)
++ The bundled MC-UPGMA clustering suite (external C++/Perl/GNU-make tool) has
+  been replaced by a portable in-package C++ reimplementation. netboost no
+  longer requires GNU make, Bash, Perl or Gzip and now builds on Windows in
+  addition to unix/macOS. Sparse-clustering output is byte-identical to
+  previous versions for the supported single-round regime (edge count up to the
+  former 1e7 heap size); very large inputs that previously triggered the
+  external tool's multi-round mode may yield identically-structured trees with
+  differently-numbered cluster IDs.
++ SIMD (AVX) acceleration of the boosting step is now selected at runtime via
+  the executing CPU's capabilities instead of being baked in at build time. The
+  same binary runs correctly across heterogeneous CPU clusters (AVX and
+  non-AVX nodes) and on non-x86 architectures; CPU-feature autodetection
+  (autoconf) was removed.
++ Removed the exported helper mcupgma_exec(), which only operated on the
+  now-removed external clustering binaries.
+
 Changes in version 2.21.1 (2026-06-17)
 + Improved computational efficiency.
 

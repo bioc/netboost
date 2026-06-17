@@ -54,6 +54,21 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// cpp_mcupgma
+NumericMatrix cpp_mcupgma(IntegerVector low, IntegerVector high, NumericVector dist, double max_singleton, double max_distance);
+RcppExport SEXP _netboost_cpp_mcupgma(SEXP lowSEXP, SEXP highSEXP, SEXP distSEXP, SEXP max_singletonSEXP, SEXP max_distanceSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< IntegerVector >::type low(lowSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type high(highSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type dist(distSEXP);
+    Rcpp::traits::input_parameter< double >::type max_singleton(max_singletonSEXP);
+    Rcpp::traits::input_parameter< double >::type max_distance(max_distanceSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_mcupgma(low, high, dist, max_singleton, max_distance));
+    return rcpp_result_gen;
+END_RCPP
+}
 // tree_search
 Rcpp::List tree_search(const IntegerMatrix& netboost_forest);
 RcppExport SEXP _netboost_tree_search(SEXP netboost_forestSEXP) {
@@ -71,6 +86,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_netboost_filter_end", (DL_FUNC) &_netboost_filter_end, 0},
     {"_netboost_rcpp_filter_step", (DL_FUNC) &_netboost_rcpp_filter_step, 1},
     {"_netboost_dist_tom", (DL_FUNC) &_netboost_dist_tom, 2},
+    {"_netboost_cpp_mcupgma", (DL_FUNC) &_netboost_cpp_mcupgma, 5},
     {"_netboost_tree_search", (DL_FUNC) &_netboost_tree_search, 1},
     {NULL, NULL, 0}
 };

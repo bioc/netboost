@@ -1,0 +1,10 @@
+# netboost native code (Windows / Rtools).
+#
+# No build-host CPU detection and no SIMD flags are set here: the AVX kernel in
+# boosting.cpp is compiled with a per-function target attribute (Rtools' GCC)
+# and selected at runtime via __builtin_cpu_supports(), so the build does not
+# depend on the build host's CPU.
+#
+# Rcpp and RcppParallel headers are provided through 'LinkingTo' in DESCRIPTION;
+# no extra compile or link flags are required (RcppParallel uses its header-only
+# TinyThread backend).

@@ -1,7 +1,7 @@
 Package: netboost
 Type: Package
 Title: Network Analysis Supported by Boosting
-Version: 2.21.1
+Version: 2.21.2
 Date: 2026-06-17
 Authors@R: c(person("Pascal", "Schlosser", role = c("aut", "cre"),
                     email = "pascal.schlosser@uniklinik-freiburg.de",
@@ -9,8 +9,10 @@ Authors@R: c(person("Pascal", "Schlosser", role = c("aut", "cre"),
              person("Jochen", "Knaus", role = c("aut", "ctb"),
                     email = "jo@imbi.uni-freiburg.de"),
              person("Yaniv", "Loewenstein", role = c("aut")))
-Description: Boosting supported network analysis for high-dimensional omics applications. 
-    This package comes bundled with the MC-UPGMA clustering package by Yaniv Loewenstein.
+Description: Boosting supported network analysis for high-dimensional omics applications.
+    This package includes a portable reimplementation of the MC-UPGMA clustering
+    algorithm by Yaniv Loewenstein (Loewenstein et al. 2008,
+    <doi:10.1093/bioinformatics/btn174>).
 Depends:
   R (>= 4.0.0)
 biocViews:
@@ -36,8 +38,7 @@ Imports:
   WGCNA,
   impute,
   colorspace,
-  methods,
-  R.utils
+  methods
 LinkingTo:
   Rcpp,
   RcppParallel
@@ -46,13 +47,6 @@ Suggests:
   rmarkdown,
   BiocStyle
 VignetteBuilder: knitr
-SystemRequirements:
-  GNU make,
-  Bash,
-  Perl,
-  Gzip
-OS_type: unix
-Config/Bioconductor/UnsupportedPlatforms: windows
 ByteCompile: yes
 NeedsCompilation: yes
 LazyData: true
@@ -60,4 +54,4 @@ License: GPL-3
 URL: https://bioconductor.org/packages/release/bioc/html/netboost.html
 BugReports: mailto:pascal.schlosser@uniklinik-freiburg.de
 Encoding: UTF-8
-RoxygenNote: 7.3.3
+Config/roxygen2/version: 8.0.0

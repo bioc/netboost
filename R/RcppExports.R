@@ -41,6 +41,27 @@ cpp_dist_tom <- function(filter, adjacency) {
     .Call('_netboost_dist_tom', PACKAGE = 'netboost', filter, adjacency)
 }
 
+#' @title In-memory MC-UPGMA clustering (single round)
+#'
+#' @description Portable reimplementation of the sparse average-linkage
+#'   (UPGMA) clustering performed by netboost. Missing pairs are treated as
+#'   distance \code{max_distance}; merging proceeds in order of increasing
+#'   distance (ties broken by the largest cluster-id pair) until no edge with
+#'   distance <= \code{max_distance} remains, yielding a forest.
+#'
+#' @param low Integer vector, smaller cluster id of each input edge (1-based).
+#' @param high Integer vector, larger cluster id of each input edge (1-based).
+#' @param dist Numeric vector of edge distances (in [0, max_distance]).
+#' @param max_singleton Numeric. Maximum singleton id; new (merged) cluster ids
+#'   start at \code{max_singleton + 1}.
+#' @param max_distance Numeric. Upper distance bound (psi); also the distance
+#'   assigned to missing pairs.
+#' @return Numeric matrix with columns cluster_id1, cluster_id2, distance,
+#'   cluster_id3 (one row per merge, in merge order).
+cpp_mcupgma <- function(low, high, dist, max_singleton, max_distance) {
+    .Call('_netboost_cpp_mcupgma', PACKAGE = 'netboost', low, high, dist, max_singleton, max_distance)
+}
+
 #' @title Tree search.
 #' @name cpp_tree_search
 #' 

@@ -11,7 +11,6 @@
 #' 
 #' @importFrom Rcpp evalCpp
 #' @importFrom RcppParallel setThreadOptions
-#' @importFrom R.utils gzip isGzipped
 #' @importFrom parallel mclapply
 #' @importFrom colorspace rainbow_hcl
 #' @importFrom grDevices dev.off gray pdf colorRampPalette adjustcolor
@@ -24,7 +23,7 @@
 #' @importFrom WGCNA allowWGCNAThreads mergeCloseModules plotDendroAndColors
 #' @importFrom WGCNA moduleColor.getMEprefix pickSoftThreshold TOMsimilarity
 #'   labels2colors
-#' @importFrom utils data packageDescription read.table write.table
+#' @importFrom utils data packageDescription
 #' @importFrom methods is
 #'
 #' @useDynLib netboost
@@ -65,36 +64,6 @@
 
     # Create temp subfolder in tempdir()
     netboostTmpCleanup()
-
-    ## Add the current (real) loading path to MCUPGMA Makefiles
-    ## (install_path.mk is loaded by definitions.mk, which is
-    ## included in all real Makefiles).
-    mcupgma_install <- file.path(netboostMCUPGMAPath(),
-                                 "install_path.mk")
-
-    ## If this file is not existing in this location, this is a non working
-    ## installation (may happen during build and included test-loads) (writeLines
-    ## throws warning in R CMD check, but we do valid stuff here)
-    if (file.exists(mcupgma_install)) {
-        # R complains about writeLines (false positive, as not writing to STDOUT).
-        # Replaced with write.table to pass package check.
-        txt <- c(paste("export INSTALL_PATH := ", netboostMCUPGMAPath()),
-                 paste("export TMP_PATH := ", netboostTmpPath()))
-        write.table(file = mcupgma_install, as.data.frame(txt),
-                    quote = FALSE, row.names = FALSE,
-                    col.names = FALSE, append = FALSE, sep="")
-        ##    filew <-file(mcupgma_install, open="w")
-        ##    writeLines(con=filew, text=c(paste("export INSTALL_PATH := ",
-        ##    mcupgmaPath)))
-        ##    writeLines(con=filew, text=c(paste("export TMP_PATH := ",
-        ##    netboostTmpPath())))
-        ##    close(filew)
-    }
-    # Else successful build would be warned.
-    else {
-        warning(paste("File not written:", mcupgma_install,
-                      "(okay during build, error after installation)"))
-    }
 }
 
 ## #' If package detached, clean up temporary folders.
