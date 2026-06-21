@@ -1,8 +1,8 @@
 Package: netboost
 Type: Package
 Title: Network Analysis Supported by Boosting
-Version: 2.21.2
-Date: 2026-06-17
+Version: 2.21.3
+Date: 2026-06-21
 Authors@R: c(person("Pascal", "Schlosser", role = c("aut", "cre"),
                     email = "pascal.schlosser@uniklinik-freiburg.de",
                     comment = c(ORCID = "0000-0002-8460-0462")),
@@ -52,6 +52,6 @@ NeedsCompilation: yes
 LazyData: true
 License: GPL-3
 URL: https://bioconductor.org/packages/release/bioc/html/netboost.html
-BugReports: mailto:pascal.schlosser@uniklinik-freiburg.de
+Contact: pascal.schlosser@uniklinik-freiburg.de
 Encoding: UTF-8
 Config/roxygen2/version: 8.0.0

@@ -1,3 +1,9 @@
+Changes in version 2.21.3 (2026-06-21)
++ Fixed printf-style format warnings in the boosting C++ debug output (size_t
+  arguments now use %zu), clearing an R CMD check WARNING on Windows.
++ Moved the maintainer email from the BugReports field to the Contact field as
+  recommended by R CMD check, clearing a DESCRIPTION NOTE.
+
 Changes in version 2.21.2 (2026-06-17)
 + The bundled MC-UPGMA clustering suite (external C++/Perl/GNU-make tool) has
   been replaced by a portable in-package C++ reimplementation. netboost no

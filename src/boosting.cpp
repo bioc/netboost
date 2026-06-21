@@ -412,7 +412,7 @@ public:
         *seq_z_means++ = *tmp_seq_data++ - col_mean;
       
       if (DEBUG)
-        Rprintf( "  DATA POINTER REAL LENGTH: %li / %li dbl (matrix: %zu -- max %zu)\n",
+        Rprintf( "  DATA POINTER REAL LENGTH: %zu / %zu dbl (matrix: %zu -- max %zu)\n",
                  (size_t)seq_data - (size_t)data_heap.get(),
                  ((size_t)seq_data - (size_t)data_heap.get()) / sizeof(double),
                  (col+1) * nrow,
@@ -426,12 +426,12 @@ public:
     
     if (DEBUG) {
       Rprintf( "END POINTER: %p - %p\n", seq_data, seq_z_means);
-      Rprintf( "  DATA END POINTER SHOULD BE max: %p (REAL LENGTH: %li / %li dbl)\n",
+      Rprintf( "  DATA END POINTER SHOULD BE max: %p (REAL LENGTH: %zu / %zu dbl)\n",
                data_heap.get() + size_aligned_copy,
                (size_t)seq_data - (size_t)data_heap.get(),
                ((size_t)seq_data - (size_t)data_heap.get()) / sizeof(double)
       );
-      Rprintf( "  zMEANS END POINTER SHOULD BE: %p (DIFF: %li bytes / %li dbl)\n",
+      Rprintf( "  zMEANS END POINTER SHOULD BE: %p (DIFF: %zu bytes / %zu dbl)\n",
                z_means_heap.get() + size_aligned_copy,
                (size_t)seq_z_means - (size_t)z_means_heap.get(),
                ((size_t)seq_z_means - (size_t)z_means_heap.get()) / sizeof(double)
