@@ -1,13 +1,6 @@
 ## Formatting changed by RStudio-Autoformatting (*mostly* compatible to BioC
 ## preferences)
 
-## Note: WGCNA is not attached here. All WGCNA functions are either called with
-## the WGCNA:: prefix or imported via @importFrom (see R/zzz.R), so the package
-## namespace resolves them without putting WGCNA on the search path. WGCNA's
-## startup banner lives in its .onAttach and therefore never fires from our
-## import. Threading is enabled explicitly via WGCNA::allowWGCNAThreads() where
-## needed, so the former Sys.setenv(ALLOW_WGCNA_THREADS) workaround is obsolete.
-
 #' Netboost clustering.
 #'
 #' The Netboost clustering is performed in three subsequent steps. First, a

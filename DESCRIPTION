@@ -11,17 +11,15 @@ Authors@R: c(person("Pascal", "Schlosser", role = c("aut", "cre"),
              person("Alex", "Waterhölter", role = c("aut", "ctb"),
                     email = "alex.waterhoelter@uniklinik-freiburg.de"))
 Description: Boosting-supported network analysis for high-dimensional omics data,
-    implementing a three-step dimension reduction technique. A boosting-based
-    filter combined with the topological overlap measure first identifies the
+    implementing a three-step dimension reduction technique. A filter combined 
+    with the topological overlap measure first identifies the
     essential edges of the feature network, sparse hierarchical clustering then
     groups the selected features into modules, and each module is finally
     summarised by its first principal components. Subsequent analyses are carried
     out on these low-dimensional module signals instead of the original data,
-    which makes the method well suited to epigenetics, metabolomics and
-    transcriptomics studies. The method is described in Schlosser et al. (2021)
-    <doi:10.1109/TCBB.2020.2983010> and the clustering step uses a portable
-    in-package reimplementation of the MC-UPGMA algorithm of Loewenstein et al.
-    (2008) <doi:10.1093/bioinformatics/btn174>.
+    which makes the method well suited to epigenetics, metabolomics,
+    transcriptomics, and other omics studies. The method is described 
+    in Schlosser et al. (2021) <doi:10.1109/TCBB.2020.2983010>.
 Depends:
   R (>= 4.0.0)
 biocViews:
