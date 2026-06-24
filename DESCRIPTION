@@ -61,6 +61,7 @@ NeedsCompilation: yes
 LazyData: true
 License: GPL-3
 URL: https://bioconductor.org/packages/release/bioc/html/netboost.html
+BugReports: mailto:pascal.schlosser@uniklinik-freiburg.de
 Contact: pascal.schlosser@uniklinik-freiburg.de
 Encoding: UTF-8
 Config/roxygen2/version: 8.0.0
