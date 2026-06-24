@@ -1,14 +1,12 @@
 ## Formatting changed by RStudio-Autoformatting (*mostly* compatible to BioC
 ## preferences)
 
-## Load WGCNA, try to hide the welcome-message (only a try as it is printed...)
-## Workaround using environment to force WGCNA skipping it's welcome-message.
-Sys.setenv(ALLOW_WGCNA_THREADS = 1)
-suppressPackageStartupMessages(require(WGCNA))
-Sys.unsetenv("ALLOW_WGCNA_THREADS")
-
-## require(colorspace)
-## require(parallel)
+## Note: WGCNA is not attached here. All WGCNA functions are either called with
+## the WGCNA:: prefix or imported via @importFrom (see R/zzz.R), so the package
+## namespace resolves them without putting WGCNA on the search path. WGCNA's
+## startup banner lives in its .onAttach and therefore never fires from our
+## import. Threading is enabled explicitly via WGCNA::allowWGCNAThreads() where
+## needed, so the former Sys.setenv(ALLOW_WGCNA_THREADS) workaround is obsolete.
 
 #' Netboost clustering.
 #'
