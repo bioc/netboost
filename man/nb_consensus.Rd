@@ -8,13 +8,14 @@ nb_consensus(
   datan_list,
   filter_method = c("spearman", "pearson", "kendall", "boosting", "skip"),
   soft_power = NULL,
-  consensus_method = c("min", "max"),
+  consensus_method = c("min", "max", "median"),
   network_type = "unsigned",
   filter_dir = TRUE,
   min_cluster_size = 15L,
   ME_diss_thres = 0.25,
   merge_criterion = c("all", "any"),
-  module_retention = c("any", "all"),
+  module_retention = c("all", "any", "median"),
+  min_pc1_cor = 0.8,
   deepSplit = 2,
   method = c("pearson", "kendall", "spearman"),
   scale = TRUE,
@@ -29,98 +30,104 @@ nb_consensus(
 )
 }
 \arguments{
-\item{datan_list}{List of data frames or matrices (rows = samples,
-cols = features). All datasets must share the same column names.}
+\item{datan_list}{List of at least two data frames or matrices
+(rows = samples, columns = features). All datasets must have identical
+column names in the same order.}
 
-\item{filter_method}{Filtering method: \code{"spearman"}, \code{"pearson"},
-\code{"kendall"}, \code{"boosting"}, or \code{"skip"}.}
+\item{filter_method}{Edge pre-filter passed to \code{\link{nb_filter}};
+one of \code{"spearman"}, \code{"pearson"}, \code{"kendall"},
+\code{"boosting"}, or \code{"skip"} (no filtering).}
 
-\item{soft_power}{Numeric soft-thresholding power, or \code{NULL} for none.}
+\item{soft_power}{Optional non-negative soft-thresholding power applied to
+the consensus adjacency. \code{NULL} disables soft thresholding.}
 
-\item{consensus_method}{How to combine adjacencies across datasets:
-\code{"min"} or \code{"max"}.}
+\item{consensus_method}{How per-dataset edge weights are aggregated:
+\code{"min"} (edge must exist in all datasets), \code{"max"} (in at least
+two), or \code{"median"} (in at least half).}
 
-\item{network_type}{Network type (currently only \code{"unsigned"}).}
+\item{network_type}{\code{"unsigned"} (default) or \code{"signed"}. When
+\code{"signed"}, only positively co-directional gene pairs are kept;
+\code{"unsigned"} keeps both directions (using \code{|cor|}). Independent
+of \code{filter_method} -- both network types work with every filter
+(boosting and the correlation-based filters alike).}
 
-\item{filter_dir}{Logical. Apply direction filter (require consistent
-correlation sign across datasets)?}
+\item{filter_dir}{Logical; for \code{network_type = "unsigned"}, require
+the correlation sign to agree across datasets.}
 
-\item{min_cluster_size}{Integer. Minimum module size.}
+\item{min_cluster_size}{Minimum module size for \code{cutreeDynamic} and for
+final module retention.}
 
-\item{ME_diss_thres}{Numeric (0, 1). Module eigengene dissimilarity
-threshold for merging.}
+\item{ME_diss_thres}{Module-eigengene dissimilarity threshold (1 - cor) for
+merging modules; must be in (0, 1).}
 
-\item{merge_criterion}{How to evaluate cross-dataset ME correlation for
-merging: \code{"all"} (pmin) or \code{"any"} (pmax).}
+\item{merge_criterion}{\code{"all"} (use the minimum cross-dataset ME
+correlation) or \code{"any"} (use the maximum) when merging.}
 
-\item{module_retention}{Criterion for retaining modules: \code{"any"} or
-\code{"all"}.}
+\item{module_retention}{\code{"all"}, \code{"any"}, or \code{"median"};
+how cross-dataset PC1 correlations are summarised for retention.}
 
-\item{deepSplit}{Integer passed to \code{\link[dynamicTreeCut]{cutreeDynamic}}.}
+\item{min_pc1_cor}{Minimum cross-dataset PC1 loading correlation for a
+module to be retained.}
 
-\item{method}{Correlation method for adjacency calculation.}
+\item{deepSplit}{Sensitivity (0-4) passed to \code{cutreeDynamic}.}
 
-\item{scale}{Logical. Scale and center data before PCA?}
+\item{method}{Correlation method for adjacency and \code{\link{nb_dist}};
+one of \code{"pearson"}, \code{"kendall"}, \code{"spearman"}.}
 
-\item{stepno}{Integer. Number of boosting steps for \code{\link{nb_filter}}.}
+\item{scale}{Logical; scale features before PCA/eigengene computation.}
 
-\item{n_pc}{Integer. Number of principal components.}
+\item{stepno}{Boosting steps passed to \code{\link{nb_filter}}.}
 
-\item{robust_PCs}{Logical. Use rank-based (Spearman) PCA?}
+\item{n_pc}{Number of principal components for module eigengenes.}
 
-\item{nb_min_varExpl}{Numeric. Minimum variance explained for module
-eigengenes.}
+\item{robust_PCs}{Logical; use rank-based (robust) PCA. When \code{TRUE} the
+stored \code{rotation} is computed on rank-transformed data so it is
+consistent with the rank-based projection in \code{nb_consensus_transfer}.}
 
-\item{cores}{Integer. Number of CPU cores.}
+\item{nb_min_varExpl}{Minimum variance explained for an eigengene to be
+considered valid (passed to \code{\link{nb_moduleEigengenes}}).}
 
-\item{pdf_report}{Path for PDF report, or \code{NULL} to skip.}
+\item{cores}{Number of CPU cores.}
 
-\item{mask_cache_dir}{Directory for caching filter masks, or \code{NULL}
-for \code{tempdir()}.}
+\item{pdf_report}{Optional path; if set, a multi-page PDF report is written.}
 
-\item{verbose}{Logical. Print progress messages?}
+\item{mask_cache_dir}{Optional directory for caching filter masks across
+runs that differ only in soft power.}
+
+\item{verbose}{Logical; emit progress messages.}
 }
 \value{
-A list with components:
-  \describe{
-    \item{names}{Feature names.}
-    \item{colors}{Final module color assignments (WGCNA color labels).}
-    \item{MEs}{Module eigengenes for the first dataset.}
-    \item{var_explained}{Variance explained per dataset.}
-    \item{rotation}{Mean PC rotation matrix across datasets.}
-    \item{filter}{Per-dataset filter edges.}
-    \item{colors_initial}{Pre-merge module assignments.}
-    \item{colors_merged}{Post-merge, pre-retention assignments.}
-    \item{modules_retained}{Retained module color labels.}
-    \item{geneTree}{Hierarchical clustering dendrogram.}
-    \item{ME_all_datasets}{Module eigengenes per dataset.}
-    \item{ME_cor_per_dataset}{ME correlation matrices per dataset.}
-    \item{ME_tree}{ME dendrogram.}
-    \item{pc1_weights}{PC1 weight comparison across datasets.}
-    \item{filter_stats}{Edge filtering statistics.}
-    \item{params}{Analysis parameters.}
-    \item{n_datasets}{Number of datasets.}
-    \item{n_features}{Number of features.}
-    \item{n_modules_initial}{Modules before merging.}
-    \item{n_modules_merged}{Modules after merging.}
-    \item{n_modules_final}{Modules after retention.}
-  }
+Invisibly, a list compatible with \code{\link{nb_summary}} fields
+  (\code{names}, \code{colors}, \code{MEs}, \code{var_explained},
+  \code{rotation}, \code{filter}) plus consensus-specific fields
+  (\code{colors_initial}, \code{colors_merged}, \code{modules_retained},
+  \code{ME_all_datasets}, \code{pc1_weights}, \code{filter_stats},
+  \code{params}, and module counts).
 }
 \description{
-Performs a 10-step consensus network analysis across multiple datasets:
-(1-2) Filtered adjacency per dataset, (3-4) Direction filter + consensus,
-(5) Soft thresholding, (6) TOM, (7) Hierarchical clustering,
-(8) Module eigengenes, (9) Cross-dataset module merging,
-(10) Module retention.
+Builds a consensus gene/feature network across two or more datasets that
+share the same features. Combines a per-dataset boosting/correlation filter
+(\code{\link{nb_filter}}), a consensus topological overlap matrix computed
+from per-dataset \code{\link{nb_dist}} distances, dynamic-tree clustering,
+iterative cross-dataset module merging, and module retention based on
+cross-dataset PC1 concordance.
 }
 \examples{
-data('tcga_aml_meth_rna_chr18', package='netboost')
-# Create two mock datasets from the example data
-d1 <- tcga_aml_meth_rna_chr18[1:40, 1:50]
-d2 <- tcga_aml_meth_rna_chr18[41:80, 1:50]
-res <- nb_consensus(datan_list = list(d1, d2),
-    filter_method = "spearman", stepno = 20L,
-    min_cluster_size = 5L, ME_diss_thres = 0.25,
-    verbose = FALSE)
+set.seed(1)
+mk <- function(n) {
+    m <- matrix(rnorm(n * 12), n, 12)
+    m[, 1:4] <- m[, 1:4] + rnorm(n)      # correlated block 1
+    m[, 5:8] <- m[, 5:8] + rnorm(n)      # correlated block 2
+    colnames(m) <- paste0("g", 1:12)
+    m
+}
+ds <- list(mk(40), mk(45))
+res <- nb_consensus(ds, filter_method = "pearson", min_cluster_size = 3,
+                    stepno = 5L, verbose = FALSE)
+table(res$colors)
 
+}
+\seealso{
+\code{\link{nb_consensus_transfer}}, \code{\link{nb_filter}},
+  \code{\link{nb_dist}}, \code{\link{nb_moduleEigengenes}}
 }

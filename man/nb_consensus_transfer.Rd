@@ -2,7 +2,7 @@
 % Please edit documentation in R/nb_consensus.R
 \name{nb_consensus_transfer}
 \alias{nb_consensus_transfer}
-\title{Transfer consensus module assignments to new data}
+\title{Transfer consensus module assignments and eigengenes to new data}
 \usage{
 nb_consensus_transfer(
   nb_consensus_result,
@@ -12,30 +12,38 @@ nb_consensus_transfer(
 )
 }
 \arguments{
-\item{nb_consensus_result}{Result from \code{\link{nb_consensus}}.}
+\item{nb_consensus_result}{Result list returned by \code{\link{nb_consensus}}.}
 
-\item{new_data}{Data frame or matrix (rows = samples, cols = features).}
+\item{new_data}{Data frame or matrix (rows = samples, cols = features).
+Feature names are matched against the consensus result.}
 
-\item{scale}{Logical. Scale and center \code{new_data} before projection?}
+\item{scale}{Logical; scale and center \code{new_data} before projection.}
 
-\item{robust_PCs}{Logical. Use rank-based PCA (Spearman)?}
+\item{robust_PCs}{Logical; rank-transform \code{new_data} before projection.}
 }
 \value{
-Data frame of projected module eigengenes (samples x modules).
+A data frame of projected module eigengenes (samples x modules).
 }
 \description{
-Projects consensus module eigengenes onto new samples using the rotation
-matrix from \code{\link{nb_consensus}}.
+Projects new samples onto the consensus modules discovered by
+\code{\link{nb_consensus}} using the sign-aligned PC1 rotation weights from
+the discovery cohorts (no per-cohort sign flipping), giving consistently
+oriented module eigengenes across validation datasets.
 }
 \examples{
-data('tcga_aml_meth_rna_chr18', package='netboost')
-d1 <- tcga_aml_meth_rna_chr18[1:40, 1:50]
-d2 <- tcga_aml_meth_rna_chr18[41:80, 1:50]
-res <- nb_consensus(datan_list = list(d1, d2),
-    filter_method = "spearman", stepno = 20L,
-    min_cluster_size = 5L, ME_diss_thres = 0.25,
-    verbose = FALSE)
-new_dat <- tcga_aml_meth_rna_chr18[1:10, 1:50]
-MEs_new <- nb_consensus_transfer(res, new_dat)
-
+set.seed(1)
+mk <- function(n) {
+    m <- matrix(rnorm(n * 12), n, 12)
+    m[, 1:4] <- m[, 1:4] + rnorm(n)      # correlated block 1
+    m[, 5:8] <- m[, 5:8] + rnorm(n)      # correlated block 2
+    colnames(m) <- paste0("g", 1:12)
+    m
+}
+res <- nb_consensus(list(mk(40), mk(45)), filter_method = "pearson",
+                    min_cluster_size = 3, stepno = 5L, verbose = FALSE)
+projected <- nb_consensus_transfer(res, mk(20))
+head(projected)
+}
+\seealso{
+\code{\link{nb_consensus}}
 }

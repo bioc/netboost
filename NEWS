@@ -1,3 +1,17 @@
+Changes in version 2.21.5 (2026-06-29)
++ nb_consensus()/nb_consensus_transfer() reworked. The module_retention
+  criterion ("all"/"any"/"median") and the new min_pc1_cor threshold are now
+  honoured (previously retention silently used a hard-coded mean >= 0.8), and
+  robust_PCs=TRUE now rank-transforms the data used for the stored rotation so
+  it is consistent with the rank-based projection in nb_consensus_transfer().
++ Added network_type="signed" (keep only positively co-directional pairs) and
+  consensus_method="median" for both adjacency and TOM aggregation.
++ Sign-alignment of eigengenes/PC loadings is now guarded against zero-variance
+  (NA correlation) inputs, and PC2+ loadings are oriented deterministically.
++ Fixed nb_consensus_transfer() erroring when no modules are retained.
++ Filter-mask cache keys now include a data fingerprint, so caches are no
+  longer reused across different datasets that share the same dimensions.
+
 Changes in version 2.21.3 (2026-06-21)
 + Fixed printf-style format warnings in the boosting C++ debug output (size_t
   arguments now use %zu), clearing an R CMD check WARNING on Windows.
